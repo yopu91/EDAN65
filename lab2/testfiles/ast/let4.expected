@@ -1,0 +1,17 @@
+Program
+  Let
+    List
+      Binding
+        IdDecl
+        Numeral
+      Binding
+        IdDecl
+        Numeral
+    Let
+      List
+        Binding
+          IdDecl
+          Mul
+            IdUse
+            IdUse
+      IdUse

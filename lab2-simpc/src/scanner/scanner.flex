@@ -29,15 +29,41 @@ import lang.ast.LangParser.SyntaxError;
 // macros
 WhiteSpace = [ ] | \t | \f | \n | \r
 ID = [a-zA-Z]+
-
+Numeral = [0-9]+ 
 %%
 
 // discard whitespace information
 {WhiteSpace}  { }
 
 // token definitions
-";"		{return sym(Terminals.END)}
+
+//Structire definitions-----------------------
+
+"("		{return sym(Terminals.LPAR);}
+")"		{return sym(Terminals.RPAR);}
+"{"		{return sym(Terminals.LBRACKET);}
+"}"		{return sym(Terminals.RBRACKET);}
+
+//---------------------------------------------
+
+//Arihitmetic operators definitions
+"+"		{return sym(Terminals.ADD);}
+"-"		{return sym(Terminals.SUB);}
+"*"		{return sym(Terminals.MUL);}
+"/"		{return sym(Terminals.DIV);}
+"%"		{return sym(Terminals.MOD);}
+//----------------------------------------------
+//Comparsion operators definitions--------------
+"=="		{return sym(Terminals.EQ);}
+"!="		{return sym(Terminals.NEQ);}
+"<="		{return sym(Terminals.LEQ);}
+"<"		{return sym(Terminals.LTHN);}
+">="		{return sym(Terminals.GEQ);}
+">"		{return sym(Terminals.GTHN);}
+";"		{return sym(Terminals.SEMI);}
+//--------------------------------------------------
 {ID}          { return sym(Terminals.ID); }
+{Numeral}	{ return sym(Terminals.NUMERAL);}
 <<EOF>>       { return sym(Terminals.EOF); }
 
 /* error fallback */

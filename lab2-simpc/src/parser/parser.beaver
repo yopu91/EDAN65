@@ -9,7 +9,17 @@
 	}
 :};
 
-%terminals ID;
+
+%terminals ID, NUMERAL;
+
+//Structure terminals
+%terminals LPAR,RPAR,LBRACKET,RBRACKET;
+
+//Arith terminals
+%terminals ADD, SUB, MUL, DIV, MOD;
+
+//Comparsion terminals
+%terminals EQ, NEQ, LEQ, LTHN, GEQ, GTHN, SEMI;
 
 %typeof program = "Program";
 

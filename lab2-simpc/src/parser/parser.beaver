@@ -31,6 +31,7 @@
 %typeof else_exp = "Opt";
 %typeof whileStmt = "WhileStmt";
 %typeof assign = "Assignment";
+%typeof declare = "Declare";
 %typeof expr ="Expr";
 %typeof numeral = "Numeral";
 %typeof idUse = "IdUse";
@@ -44,17 +45,19 @@ paramFunc = INT LPAR RPAR LBRACKET stmt_list.t RBRACKET SEMI {: return new Param
 
 callFunc = idUse.id LPAR RPAR {:return new CallFunc(id);:};
 
-stmt = ifStmt | whileStmt| assign;
+stmt = ifStmt | whileStmt| declare | assign;
 
 ifStmt = 
 	IF LPAR expr.a RPAR LBRACKET stmt.t RBRACKET else_exp.e{:return new IfStmt(a,t,e);:};
 
 else_exp =
-	ELSE LBRACKET stmt.t RBRACKET {:return new Opt(t);:}
+	ELSE LBRACKET stmt.u RBRACKET {:return new Opt(u);:}
 	| /*epsilon*/ {: return new Opt();:}
 	;
 
-whileStmt = WHILE LPAR expr.a RPAR LBRACKET stmt.t RBRACKET{:return new WhileStmt(a,t);:};
+whileStmt = WHILE LPAR expr.a RPAR LBRACKET stmt.t RBRACKET {:return new WhileStmt(a,t);:};
+
+declare = INT idUse.id SEMI{: return new Declare(id);:};
 
 assign = idUse.id ASSIGN expr.a SEMI {:return new Assignment(id,a);:};
 stmt_list =

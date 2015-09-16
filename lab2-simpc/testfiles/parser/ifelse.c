@@ -1,6 +1,8 @@
 int(){
 	if(a){
 		a=b;
-	}else{
+	}else {
+		b=b;
 	}
+	
 }

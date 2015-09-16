@@ -33,7 +33,13 @@ public class ParseTests extends AbstractTestSuite {
 	public void validSyntaxIfElse() {
 		testValidSyntax("ifelse.c");
 	}
-	//	public void syntaxErrorMethod() {
+	
+	@Test
+	public void validSyntaxDeclare() {
+		testValidSyntax("declare.c");
+	}
+
+//	public void syntaxErrorMethod() {
 //		testSyntaxError("error.lang");
 //	}
 }

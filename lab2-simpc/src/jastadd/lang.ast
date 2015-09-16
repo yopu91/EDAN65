@@ -9,6 +9,7 @@ WhileStmt:Stmt	::= Cond:Expr Stmt;
 IfStmt:Stmt	::= Cond:Expr Then:Stmt [Else:Stmt]; 
 ReturnStmt:Stmt	::= Expr;
 Assignment:Stmt ::= IdUse Expr;
+Declare:Stmt::= IdUse;
 
 abstract Expr;
 Numeral:Expr	::=<NUMERAL>;

@@ -41,4 +41,4 @@ local.properties
 #Added by Daniel
 .jar
 ant-bin/
-
+/src/gen/

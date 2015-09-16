@@ -22,7 +22,60 @@
 %terminals EQ, NEQ, LEQ, LTHN, GEQ, GTHN, SEMI;
 
 %typeof program = "Program";
+%typeof Stmt = "Stmt";
+%typeof ifStmt = "IfStmt";
+%typeof whileStmt = "WhileStmt";
+%typeof function = "Function";
+%typeof method = "Method";
+%typeof expr = "Expr";
 
 %goal program;
 
-program = ID.id {: return new Program(id); :} ;
+program = Stmt.prog 	{: return new Program(prog); :};
+Stmt =	 method.a 	{: return new Method(a); :} 
+	| ifStmt.a 	{: return new IfStmt(a); :} 
+	| whileStmt.a 	{: return new WhileStmt(a); :}
+	| function.a  	{: return new Function(a); :}
+	| expr.a	{: return new Expr(a); :};
+
+
+
+
+
+/**************************************/
+/*** EBNF */
+/*
+Program = Stmt
+
+Stmt = method | ifStmt | whileStmt | function | expr
+
+ifSttmt = IF LPAR compare RPAR doSomething elseStmt?
+
+elseStmt = ELSE doSomething
+
+whileStmt = WHILE LPAR compare RPAR doSomething
+
+method = intDeclare LPAR (intDeclare ',' intDeclare)? RPAR doSomething
+
+doSomething = LBRACKET stmt* RBRACKET
+
+compare = expr compExpr expr
+
+arithmetic = expr ariExpr expr
+
+compExpr = EQ | NEQ | LEQ | LTHN | GEQ | GTHN 
+
+ariExpr = ADD | SUB | MUL | DIV | MOD
+
+return = RET stmt semi
+
+intDeclare = INT ID semi
+
+function = ID param semi
+
+param = LPAR ((expr | expr ',' expr)?) | function RPAR
+
+expr = (ID | NUM | arithmetic | function) semi /* Lade till function så att vi kan göra raden "int diff = gcd1(a, b) - gcd2(a,b);" */
+
+semi = SEMI? /*Lade till frågetecken så att vi kan ha både "int a;" men även " int a, int b" exempelvis som parametrar i ett funktionsanrop*/
+*/

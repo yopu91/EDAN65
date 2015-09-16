@@ -39,7 +39,9 @@ Numeral = [0-9]+
 
 
 "int"		{return sym(Terminals.INT);}
-
+//"if"		{return sym(Terminals.IF);}
+//"else"		{return sym(Terminals.ELSE);}
+//"while"		{return sym(Terminals.WHILE);}
 
 //Structire definitions-----------------------
 "("		{return sym(Terminals.LPAR);}

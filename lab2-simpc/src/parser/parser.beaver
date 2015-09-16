@@ -10,72 +10,44 @@
 :};
 
 
-%terminals ID, NUMERAL;
+%terminals ID;
+// NUMERAL;
 
 //Structure terminals
-%terminals LPAR,RPAR,LBRACKET,RBRACKET;
+%terminals LPAR,RPAR, INT;
+//LBRACKET,RBRACKET;
 
 //Arith terminals
-%terminals ADD, SUB, MUL, DIV, MOD;
+//%terminals ADD, SUB, MUL, DIV, MOD;
 
 //Comparsion terminals
-%terminals EQ, NEQ, LEQ, LTHN, GEQ, GTHN, SEMI;
+//%terminals EQ, NEQ, LEQ, LTHN, GEQ, GTHN, SEMI;
 
 %typeof program = "Program";
-%typeof Stmt = "Stmt";
-%typeof ifStmt = "IfStmt";
-%typeof whileStmt = "WhileStmt";
-%typeof function = "Function";
+%typeof stmt = "Stmt";
+//%typeof ifStmt = "IfStmt";
+//%typeof whileStmt = "WhileStmt";
+//%typeof function = "Function";
 %typeof method = "Method";
-%typeof expr = "Expr";
+//%typeof expr = "Expr";
+%typeof intDecl = "intDecl";
+
 
 %goal program;
 
-program = Stmt.prog 	{: return new Program(prog); :};
-Stmt =	 method.a 	{: return new Method(a); :} 
-	| ifStmt.a 	{: return new IfStmt(a); :} 
-	| whileStmt.a 	{: return new WhileStmt(a); :}
-	| function.a  	{: return new Function(a); :}
-	| expr.a	{: return new Expr(a); :};
+program = stmt.a {: return new Program(a); :};
+stmt =	 method.a 	{: return new Method(a); :};
+//	| ifStmt.a 	{: return new IfStmt(a); :} 
+//	| whileStmt.a 	{: return new WhileStmt(a); :}
+//	| function.a  	{: return new Function(a); :}
+//	| expr.a	{: return new Expr(a); :};
+method = intDecl LPAR ID RPAR 
+	{: return new Method();:};
+//ifStmt = IF LPAR compare.a RPAR doSomething {: return new Compare(a);};
+//whileStmt = WHILE LPAR compare.a RPAR doSomething {: return new WhileStmt(a);:};
+//ifStmt =	expr.a {:return new IfStmt(a);:};
+//whileStmt =	expr.a {:return new WhileStmt(a);:};
+//function =	expr.a {:return new Function(a);:};
+intDecl = INT ID  {:return intDecl(); :};
+//expr =		expr.a {:return new Expr(a);:};
 
-
-
-
-
-/**************************************/
-/*** EBNF */
-/*
-Program = Stmt
-
-Stmt = method | ifStmt | whileStmt | function | expr
-
-ifSttmt = IF LPAR compare RPAR doSomething elseStmt?
-
-elseStmt = ELSE doSomething
-
-whileStmt = WHILE LPAR compare RPAR doSomething
-
-method = intDeclare LPAR (intDeclare ',' intDeclare)? RPAR doSomething
-
-doSomething = LBRACKET stmt* RBRACKET
-
-compare = expr compExpr expr
-
-arithmetic = expr ariExpr expr
-
-compExpr = EQ | NEQ | LEQ | LTHN | GEQ | GTHN 
-
-ariExpr = ADD | SUB | MUL | DIV | MOD
-
-return = RET stmt semi
-
-intDeclare = INT ID semi
-
-function = ID param semi
-
-param = LPAR ((expr | expr ',' expr)?) | function RPAR
-
-expr = (ID | NUM | arithmetic | function) semi /* Lade till function så att vi kan göra raden "int diff = gcd1(a, b) - gcd2(a,b);" */
-
-semi = SEMI? /*Lade till frågetecken så att vi kan ha både "int a;" men även " int a, int b" exempelvis som parametrar i ett funktionsanrop*/
-*/

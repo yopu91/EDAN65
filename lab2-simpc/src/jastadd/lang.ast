@@ -1,1 +1,5 @@
-Program ::= <ID>;
+Program ::= Stmt;
+
+abstract Stmt;
+Method: Stmt ::= <ID:String>;
+intDecl ::= <ID:String>;

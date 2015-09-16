@@ -1,5 +1,16 @@
-Program ::= Stmt;
+Program ::= Function;
+
+abstract Function;
+ParamFunc:Function ::=  Stmt*;
+CallFunc:Function  ::= IdUse;
 
 abstract Stmt;
-Method: Stmt ::= <ID:String>;
-intDecl ::= <ID:String>;
+WhileStmt:Stmt	::= Cond:Expr Stmt;
+IfStmt:Stmt	::= Cond:Expr Then:Stmt [Else:Stmt]; 
+ReturnStmt:Stmt	::= Expr;
+Assignment:Stmt ::= IdUse Expr;
+
+abstract Expr;
+Numeral:Expr	::=<NUMERAL>;
+IdUse:Expr	::=<ID>;
+

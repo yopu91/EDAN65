@@ -10,12 +10,10 @@
 :};
 
 
-%terminals ID;
-// NUMERAL;
-
+%terminals ID, NUMERAL, ASSIGN, IF,ELSE, WHILE, INT;
+//RETURN
 //Structure terminals
-%terminals LPAR,RPAR, INT;
-//LBRACKET,RBRACKET;
+%terminals LPAR, RPAR, LBRACKET, RBRACKET, SEMI;
 
 //Arith terminals
 //%terminals ADD, SUB, MUL, DIV, MOD;
@@ -24,30 +22,46 @@
 //%terminals EQ, NEQ, LEQ, LTHN, GEQ, GTHN, SEMI;
 
 %typeof program = "Program";
+%typeof function = "Function";
+%typeof paramFunc = "ParamFunc";
+%typeof callFunc = "CallFunc";
 %typeof stmt = "Stmt";
-//%typeof ifStmt = "IfStmt";
-//%typeof whileStmt = "WhileStmt";
-//%typeof function = "Function";
-%typeof method = "Method";
-//%typeof expr = "Expr";
-%typeof intDecl = "intDecl";
-
+%typeof stmt_list = "List";
+%typeof ifStmt = "IfStmt";
+%typeof else_exp = "Opt";
+%typeof whileStmt = "WhileStmt";
+%typeof assign = "Assignment";
+%typeof expr ="Expr";
+%typeof numeral = "Numeral";
+%typeof idUse = "IdUse";
 
 %goal program;
 
-program = stmt.a {: return new Program(a); :};
-stmt =	 method.a 	{: return new Method(a); :};
-//	| ifStmt.a 	{: return new IfStmt(a); :} 
-//	| whileStmt.a 	{: return new WhileStmt(a); :}
-//	| function.a  	{: return new Function(a); :}
-//	| expr.a	{: return new Expr(a); :};
-method = intDecl LPAR ID RPAR 
-	{: return new Method();:};
-//ifStmt = IF LPAR compare.a RPAR doSomething {: return new Compare(a);};
-//whileStmt = WHILE LPAR compare.a RPAR doSomething {: return new WhileStmt(a);:};
-//ifStmt =	expr.a {:return new IfStmt(a);:};
-//whileStmt =	expr.a {:return new WhileStmt(a);:};
-//function =	expr.a {:return new Function(a);:};
-intDecl = INT ID  {:return intDecl(); :};
-//expr =		expr.a {:return new Expr(a);:};
+program = function.a {: return new Program(a); :};
+function = paramFunc | callFunc;
 
+paramFunc = INT LPAR RPAR LBRACKET stmt_list.t RBRACKET SEMI {: return new ParamFunc(t); :};
+
+callFunc = idUse.id LPAR RPAR {:return new CallFunc(id);:};
+
+stmt = ifStmt | whileStmt| assign;
+
+ifStmt = 
+	IF LPAR expr.a RPAR LBRACKET stmt.t RBRACKET else_exp.e{:return new IfStmt(a,t,e);:};
+
+else_exp =
+	ELSE LBRACKET stmt.t RBRACKET {:return new Opt(t);:}
+	| /*epsilon*/ {: return new Opt();:}
+	;
+
+whileStmt = WHILE LPAR expr.a RPAR LBRACKET stmt.t RBRACKET{:return new WhileStmt(a,t);:};
+
+assign = idUse.id ASSIGN expr.a SEMI {:return new Assignment(id,a);:};
+stmt_list =
+	stmt.a {: return new List().add(a); :}
+	| stmt_list.a stmt.b {: return a.add(b); :}
+	;
+
+expr = numeral | idUse;
+numeral = NUMERAL.num {:return new Numeral(num);:};
+idUse = ID.id {:return new IdUse(id);:};

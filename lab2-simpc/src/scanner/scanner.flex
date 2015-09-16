@@ -39,15 +39,16 @@ Numeral = [0-9]+
 
 
 "int"		{return sym(Terminals.INT);}
-//"if"		{return sym(Terminals.IF);}
+"if"		{return sym(Terminals.IF);}
 //"else"		{return sym(Terminals.ELSE);}
-//"while"		{return sym(Terminals.WHILE);}
-
+//"return"	{return sym(Terminals.RETURN)};
+"while"		{return sym(Terminals.WHILE);}
+"="		{return sym(Terminals.ASSIGN);}
 //Structire definitions-----------------------
 "("		{return sym(Terminals.LPAR);}
 ")"		{return sym(Terminals.RPAR);}
-//"{"		{return sym(Terminals.LBRACKET);}
-//"}"		{return sym(Terminals.RBRACKET);}
+"{"		{return sym(Terminals.LBRACKET);}
+"}"		{return sym(Terminals.RBRACKET);}
 
 //---------------------------------------------
 
@@ -65,7 +66,7 @@ Numeral = [0-9]+
 //"<"		{return sym(Terminals.LTHN);}
 //">="		{return sym(Terminals.GEQ);}
 //">"		{return sym(Terminals.GTHN);}
-//";"		{return sym(Terminals.SEMI);}
+";"		{return sym(Terminals.SEMI);}
 //--------------------------------------------------
 {ID}          { return sym(Terminals.ID); }
 //{Numeral}	{ return sym(Terminals.NUMERAL);}

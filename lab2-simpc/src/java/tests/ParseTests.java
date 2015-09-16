@@ -13,8 +13,27 @@ public class ParseTests extends AbstractTestSuite {
 		testValidSyntax("method.lang");
 	}
 
-//	@Test
-//	public void syntaxErrorMethod() {
+	@Test
+	public void validSyntaxMethodIf() {
+		testValidSyntax("method_if.lang");
+	}
+
+	
+	@Test
+	public void validSyntaxManyIf() {
+		testValidSyntax("many_if.lang");
+	}
+
+	@Test
+	public void validSyntaxWhile() {
+		testValidSyntax("while.lang");
+	}
+
+	@Test
+	public void validSyntaxIfElse() {
+		testValidSyntax("ifelse.c");
+	}
+	//	public void syntaxErrorMethod() {
 //		testSyntaxError("error.lang");
 //	}
 }

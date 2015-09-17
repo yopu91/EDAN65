@@ -5,4 +5,5 @@ int main(){
 	else{
 		b=a;
 	}
+return 8;
 }

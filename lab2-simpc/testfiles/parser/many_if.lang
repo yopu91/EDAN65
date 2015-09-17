@@ -4,5 +4,6 @@ a=a;
 }
 if(b){
 b=b;}
+return 0;
 }
 

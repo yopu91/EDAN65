@@ -10,8 +10,7 @@
 :};
 
 
-%terminals ID, NUMERAL, ASSIGN, IF,ELSE, WHILE, INT;
-//%terminals RETURN;
+%terminals ID, NUMERAL, ASSIGN, IF,ELSE, WHILE, INT, RETURN, COMMA;
 //Structure terminals
 %terminals LPAR, RPAR, LBRACKET, RBRACKET, SEMI;
 
@@ -24,32 +23,46 @@
 %typeof program = "Program";
 %typeof function = "Function";
 %typeof paramFunc = "ParamFunc";
-%typeof callFunc = "CallFunc";
+%typeof funcStmt = "FuncStmt";
 %typeof func_list = "List";
 %typeof stmt = "Stmt";
 %typeof stmt_list = "List";
 %typeof ifStmt = "IfStmt";
 %typeof else_exp = "Opt";
 %typeof whileStmt = "WhileStmt";
+%typeof returnStmt = "ReturnStmt";
 %typeof assign = "Assignment";
 %typeof declare = "Declare";
 %typeof expr ="Expr";
 %typeof numeral = "Numeral";
 %typeof idUse = "IdUse";
-
+%typeof param = "Param";
+%typeof param_list = "List";
+%typeof arg = "Argument";
+%typeof arg_list = "List";
 %goal program;
 
 program = func_list.a {: return new Program(a); :};
 
-function = paramFunc | callFunc;
+function = paramFunc;
 
-paramFunc = INT idUse.id LPAR RPAR LBRACKET stmt_list.t  RBRACKET SEMI?  {: return new ParamFunc(id,t); :};
+paramFunc = INT idUse.id LPAR param_list.p RPAR LBRACKET stmt_list.t RBRACKET  {: return new ParamFunc(id,p,t); :};
 
-callFunc = idUse.id LPAR RPAR {:return new CallFunc(id);:};
+funcStmt = idUse.id LPAR arg_list.l RPAR {:return new FuncStmt(id,l);:};
 
-stmt = ifStmt | whileStmt| declare | assign;
+stmt = ifStmt | whileStmt| declare | funcStmt | assign | returnStmt;
 
 ifStmt = IF LPAR expr.a RPAR LBRACKET stmt.t RBRACKET else_exp.e {:return new IfStmt(a,t,e);:};
+
+param = 
+	INT idUse.id {:return new Param(id);:}
+	| COMMA INT idUse.id {: return new Param(id);:}
+	;
+
+arg = 
+	idUse.id {:return new Argument(id);:}
+	| COMMA idUse.id {: return new Argument(id);:}
+	;
 
 else_exp =
 	ELSE LBRACKET stmt.u RBRACKET {:return new Opt(u);:}
@@ -60,7 +73,21 @@ whileStmt = WHILE LPAR expr.a RPAR LBRACKET stmt.t RBRACKET {:return new WhileSt
 
 declare = INT idUse.id SEMI{: return new Declare(id);:};
 
+returnStmt = RETURN expr.a SEMI {: return new ReturnStmt(a);:};
+
 assign = idUse.id ASSIGN expr.a SEMI {:return new Assignment(id,a);:};
+
+param_list =   
+       	param.a {: return new List().add(a); :}
+        |  param_list.a param.b {: return a.add(b); :}
+        ;
+
+
+arg_list =   
+       	arg.a {: return new List().add(a); :}
+        |  arg_list.a arg.b {: return a.add(b); :}
+        ;
+
 
 stmt_list =
 	stmt.a {: return new List().add(a); :}

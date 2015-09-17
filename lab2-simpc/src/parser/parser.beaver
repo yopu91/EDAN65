@@ -16,10 +16,10 @@
 %terminals LPAR, RPAR, LBRACKET, RBRACKET, SEMI;
 
 //Arith terminals
-//%terminals ADD, SUB, MUL, DIV, MOD;
+%terminals ADD, SUB, MUL, DIV, MOD;
 
 //Comparsion terminals
-//%terminals EQ, NEQ, LEQ, LTHN, GEQ, GTHN, SEMI;
+%terminals EQ, NEQ, LEQ, LTHN, GEQ, GTHN, SEMI;
 
 %typeof program = "Program";
 %typeof function = "Function";
@@ -41,7 +41,7 @@
 program = function.a {: return new Program(a); :};
 function = paramFunc | callFunc;
 
-paramFunc = INT LPAR RPAR LBRACKET stmt_list.t RBRACKET SEMI {: return new ParamFunc(t); :};
+paramFunc = INT LPAR RPAR LBRACKET stmt_list.t RBRACKET SEMI?  {: return new ParamFunc(t); :};
 
 callFunc = idUse.id LPAR RPAR {:return new CallFunc(id);:};
 

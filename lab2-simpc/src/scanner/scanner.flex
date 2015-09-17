@@ -40,8 +40,8 @@ Numeral = [0-9]+
 
 "int"		{return sym(Terminals.INT);}
 "if"		{return sym(Terminals.IF);}
-//"else"		{return sym(Terminals.ELSE);}
-//"return"	{return sym(Terminals.RETURN)};
+"else"		{return sym(Terminals.ELSE);}
+//"return"	{return sym(Terminals.RETURN);}
 "while"		{return sym(Terminals.WHILE);}
 "="		{return sym(Terminals.ASSIGN);}
 //Structire definitions-----------------------

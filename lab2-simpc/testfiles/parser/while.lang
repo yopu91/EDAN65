@@ -1,1 +1,5 @@
-int(){while(a){a=b;}}
+int(){
+	while(a){
+		a=b;
+	}
+}

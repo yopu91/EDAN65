@@ -1,0 +1,91 @@
+%class "LangParser";
+%package "lang.ast";
+
+%embed {:
+	static public class SyntaxError extends RuntimeException { public SyntaxError(String msg) {super(msg);}}
+	// Disable syntax error recovery
+	protected void recoverFromError(Symbol token, TokenStream in) {
+		throw new SyntaxError("Cannot recover from the syntax error");
+	}
+:};
+
+
+%terminals ID, NUMERAL, ASSIGN, IF,ELSE, WHILE, INT;
+//%terminals RETURN;
+//Structure terminals
+%terminals LPAR, RPAR, LBRACKET, RBRACKET, SEMI;
+
+//Arith terminals
+%terminals ADD, SUB, MUL, DIV, MOD;
+
+//Comparsion terminals
+%terminals EQ, NEQ, LEQ, LTHN, GEQ, GTHN, SEMI;
+
+%typeof program = "Program";
+%typeof function = "Function";
+%typeof paramFunc = "ParamFunc";
+%typeof callFunc = "CallFunc";
+%typeof func_list = "List";
+%typeof stmt = "Stmt";
+%typeof stmt_list = "List";
+%typeof ifStmt = "IfStmt";
+%typeof else_exp = "Opt";
+%typeof whileStmt = "WhileStmt";
+%typeof assign = "Assignment";
+%typeof declare = "Declare";
+%typeof expr ="Expr";
+%typeof numeral = "Numeral";
+%typeof idUse = "IdUse";
+%typeof defineParams = "defineParams";
+%typeof callParams = "callParams";
+%goal program;
+
+program = func_list.a {: return new Program(a); :};
+
+function = paramFunc | callFunc;
+
+
+
+paramFunc = INT idUse.id LPAR RPAR LBRACKET stmt_list.t  RBRACKET SEMI?  {: return new ParamFunc(id,t); :};
+
+defineParams0 = 
+defineParams1a = INT idUse.left
+defineParams1b = expr.left
+defineParams2a = INT idUse.left ',' INT idUse.right
+defineParams2b = INT idUse.left ',' expr.right
+
+
+
+callParams = 
+
+callFunc = idUse.id LPAR RPAR {:return new CallFunc(id);:};
+
+stmt = ifStmt | whileStmt | declare | assign;
+
+ifStmt = IF LPAR expr.a RPAR LBRACKET stmt.t RBRACKET else_exp.e {:return new IfStmt(a,t,e);:};
+
+else_exp =
+	ELSE LBRACKET stmt.u RBRACKET {:return new Opt(u);:}
+	| /*epsilon*/ {: return new Opt();:}
+	;
+
+whileStmt = WHILE LPAR expr.a RPAR LBRACKET stmt.t RBRACKET {:return new WhileStmt(a,t);:};
+
+declare = INT idUse.id SEMI{: return new Declare(id);:};
+
+assign = idUse.id ASSIGN expr.a SEMI {:return new Assignment(id,a);:};
+
+stmt_list =
+	stmt.a {: return new List().add(a); :}
+	| stmt_list.a stmt.b {: return a.add(b); :}
+	;
+
+func_list =
+        function.a {: return new List().add(a); :}
+        | func_list.a function.b {: return a.add(b); :}
+        ;
+
+
+expr = numeral | idUse;
+numeral = NUMERAL.num {:return new Numeral(num);:};
+idUse = ID.id {:return new IdUse(id);:};

@@ -40,6 +40,19 @@
 %typeof param_list = "List";
 %typeof arg = "Argument";
 %typeof arg_list = "List";
+%typeof mul = "Mul";
+%typeof div = "Div";
+%typeof sub = "Sub";
+%typeof mod = "Mod";
+%typeof add = "Add";
+%typeof eq_expr = "Eq";
+%typeof neq_expr = "Neq";
+%typeof gthn_expr = "Gthn";
+%typeof lthn_expr = "Lthn";
+%typeof geq_expr = "Geq";
+%typeof leq_expr = "Leq";
+
+
 %goal program;
 
 program = func_list.a {: return new Program(a); :};
@@ -54,10 +67,14 @@ stmt = ifStmt | whileStmt| declare | funcStmt | assign | returnStmt;
 
 ifStmt = IF LPAR expr.a RPAR LBRACKET stmt.t RBRACKET else_exp.e {:return new IfStmt(a,t,e);:};
 
-param = 
-	INT idUse.id {:return new Param(id);:}
-	| COMMA INT idUse.id {: return new Param(id);:}
-	;
+
+
+/****************************/
+param = INT idUse.id {:return new Param(id);:}
+        | COMMA INT idUse.id {: return new Param(id);:}
+        ;
+/********************************/
+
 
 arg = 
 	idUse.id {:return new Argument(id);:}
@@ -79,7 +96,7 @@ assign = idUse.id ASSIGN expr.a SEMI {:return new Assignment(id,a);:};
 
 param_list =   
        	param.a {: return new List().add(a); :}
-        |  param_list.a param.b {: return a.add(b); :}
+        | param_list.a param.b {: return a.add(b); :}
         ;
 
 
@@ -99,7 +116,22 @@ func_list =
         | func_list.a function.b {: return a.add(b); :}
         ;
 
+	
+mul = expr.a MUL expr.b {: return new Mul(a,b);:};
+add = expr.a ADD expr.b {: return new Add(a,b);:};
+sub = expr.a SUB expr.b {: return new Sub(a,b);:};
+div = expr.a DIV expr.b {: return new Div(a,b);:};
+mod = expr.a MOD expr.b {: return new Mod(a,b);:};
+eq_expr = expr.a EQ expr.b {: return new Eq(a,b);:};
+neq_expr = expr.a NEQ expr.b {: return new Neq(a,b);:};
+gthn_expr = expr.a GTHN expr.b {: return new Gthn(a,b);:};
+lthn_expr = expr.a LTHN expr.b {: return new Lthn(a,b);:};
+geq_expr = expr.a GEQ expr.b {: return new Geq(a,b);:};
+leq_expr = expr.a LEQ expr.b {:return new Leq(a,b);:};
 
-expr = numeral | idUse;
+
+
+
+expr = numeral | idUse | mul | add | sub | div | mod | eq_expr | neq_expr | gthn_expr | lthn_expr | geq_expr | leq_expr;
 numeral = NUMERAL.num {:return new Numeral(num);:};
 idUse = ID.id {:return new IdUse(id);:};

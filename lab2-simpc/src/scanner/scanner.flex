@@ -54,23 +54,23 @@ Numeral = [0-9]+
 //---------------------------------------------
 
 //Arihitmetic operators definitions
-//"+"		{return sym(Terminals.ADD);}
-//"-"		{return sym(Terminals.SUB);}
-//"*"		{return sym(Terminals.MUL);}
-//"/"		{return sym(Terminals.DIV);}
-//"%"		{return sym(Terminals.MOD);}
+"+"		{return sym(Terminals.ADD);}
+"-"		{return sym(Terminals.SUB);}
+"*"		{return sym(Terminals.MUL);}
+"/"		{return sym(Terminals.DIV);}
+"%"		{return sym(Terminals.MOD);}
 //----------------------------------------------
 //Comparsion operators definitions--------------
-//"=="		{return sym(Terminals.EQ);}
-//"!="		{return sym(Terminals.NEQ);}
-//"<="		{return sym(Terminals.LEQ);}
-//"<"		{return sym(Terminals.LTHN);}
-//">="		{return sym(Terminals.GEQ);}
-//">"		{return sym(Terminals.GTHN);}
+"=="		{return sym(Terminals.EQ);}
+"!="		{return sym(Terminals.NEQ);}
+"<="		{return sym(Terminals.LEQ);}
+"<"		{return sym(Terminals.LTHN);}
+">="		{return sym(Terminals.GEQ);}
+">"		{return sym(Terminals.GTHN);}
 ";"		{return sym(Terminals.SEMI);}
 //--------------------------------------------------
 {ID}          { return sym(Terminals.ID); }
-{Numeral}	{ return sym(Terminals.NUMERAL);}
+{Numeral}	{ return sym(Terminals.NUMERAL); }
 <<EOF>>       { return sym(Terminals.EOF); }
 
 /* error fallback */

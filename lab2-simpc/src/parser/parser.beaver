@@ -61,7 +61,7 @@ declare = INT idUse.id SEMI{: return new Declare(id);:};
 
 assign = idUse.id ASSIGN expr.a SEMI {:return new Assignment(id,a);:};
 
-stmt_list = stmt.a {:return new List().add(a);:} | stmt_list.a stmt b {:return a.add(b);:};
+stmt_list = stmt.a {:return new List().add(a);:} | stmt_list.a stmt.b {:return a.add(b);:};
 
 expr = numeral | idUse;
 numeral = NUMERAL.num {:return new Numeral(num);:};

@@ -69,7 +69,7 @@ Numeral = [0-9]+
 ";"		{return sym(Terminals.SEMI);}
 //--------------------------------------------------
 {ID}          { return sym(Terminals.ID); }
-//{Numeral}	{ return sym(Terminals.NUMERAL);}
+{Numeral}	{ return sym(Terminals.NUMERAL);}
 <<EOF>>       { return sym(Terminals.EOF); }
 
 /* error fallback */

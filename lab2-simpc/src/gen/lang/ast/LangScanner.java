@@ -36,10 +36,10 @@ public final class LangScanner extends beaver.Scanner {
    * Translates characters to character classes
    */
   private static final String ZZ_CMAP_PACKED = 
-    "\11\0\1\1\1\1\1\0\1\1\1\1\22\0\1\1\7\0\1\15"+
-    "\1\16\6\0\12\0\1\0\1\21\1\0\1\14\3\0\32\2\6\0"+
-    "\4\2\1\7\1\6\1\2\1\13\1\3\2\2\1\10\1\2\1\4"+
-    "\4\2\1\11\1\5\2\2\1\12\3\2\1\17\1\0\1\20\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uff92\0";
+    "\11\0\1\1\1\1\1\0\1\1\1\1\22\0\1\1\7\0\1\16"+
+    "\1\17\6\0\12\3\1\0\1\22\1\0\1\15\3\0\32\2\6\0"+
+    "\4\2\1\10\1\7\1\2\1\14\1\4\2\2\1\11\1\2\1\5"+
+    "\4\2\1\12\1\6\2\2\1\13\3\2\1\20\1\0\1\21\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uff92\0";
 
   /** 
    * Translates characters to character classes
@@ -52,12 +52,12 @@ public final class LangScanner extends beaver.Scanner {
   private static final int [] ZZ_ACTION = zzUnpackAction();
 
   private static final String ZZ_ACTION_PACKED_0 =
-    "\1\0\1\1\1\2\4\3\1\4\1\5\1\6\1\7"+
-    "\1\10\1\11\1\3\1\12\2\3\1\13\2\3\1\14"+
-    "\1\3\1\15";
+    "\1\0\1\1\1\2\1\3\1\4\3\3\1\5\1\6"+
+    "\1\7\1\10\1\11\1\12\1\3\1\13\2\3\1\14"+
+    "\2\3\1\15\1\3\1\16";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[23];
+    int [] result = new int[24];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -82,12 +82,12 @@ public final class LangScanner extends beaver.Scanner {
   private static final int [] ZZ_ROWMAP = zzUnpackRowMap();
 
   private static final String ZZ_ROWMAP_PACKED_0 =
-    "\0\0\0\22\0\22\0\44\0\66\0\110\0\132\0\22"+
-    "\0\22\0\22\0\22\0\22\0\22\0\154\0\44\0\176"+
-    "\0\220\0\44\0\242\0\264\0\44\0\306\0\44";
+    "\0\0\0\23\0\23\0\46\0\71\0\114\0\137\0\162"+
+    "\0\23\0\23\0\23\0\23\0\23\0\23\0\205\0\46"+
+    "\0\230\0\253\0\46\0\276\0\321\0\46\0\344\0\46";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[23];
+    int [] result = new int[24];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -110,16 +110,19 @@ public final class LangScanner extends beaver.Scanner {
   private static final int [] ZZ_TRANS = zzUnpackTrans();
 
   private static final String ZZ_TRANS_PACKED_0 =
-    "\1\2\1\3\1\4\1\5\3\4\1\6\2\4\1\7"+
-    "\1\4\1\10\1\11\1\12\1\13\1\14\1\15\24\0"+
-    "\12\4\10\0\2\4\1\16\1\4\1\17\5\4\10\0"+
-    "\6\4\1\20\3\4\10\0\11\4\1\21\10\0\3\4"+
-    "\1\22\6\4\10\0\7\4\1\23\2\4\10\0\1\4"+
-    "\1\24\10\4\10\0\5\4\1\25\4\4\10\0\6\4"+
-    "\1\26\3\4\10\0\5\4\1\27\4\4\6\0";
+    "\1\2\1\3\1\4\1\5\1\6\3\4\1\7\2\4"+
+    "\1\10\1\4\1\11\1\12\1\13\1\14\1\15\1\16"+
+    "\25\0\1\4\1\0\11\4\11\0\1\5\21\0\1\4"+
+    "\1\0\1\4\1\17\1\4\1\20\5\4\10\0\1\4"+
+    "\1\0\5\4\1\21\3\4\10\0\1\4\1\0\10\4"+
+    "\1\22\10\0\1\4\1\0\2\4\1\23\6\4\10\0"+
+    "\1\4\1\0\6\4\1\24\2\4\10\0\1\4\1\0"+
+    "\1\25\10\4\10\0\1\4\1\0\4\4\1\26\4\4"+
+    "\10\0\1\4\1\0\5\4\1\27\3\4\10\0\1\4"+
+    "\1\0\4\4\1\30\4\4\6\0";
 
   private static int [] zzUnpackTrans() {
-    int [] result = new int[216];
+    int [] result = new int[247];
     int offset = 0;
     offset = zzUnpackTrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -157,10 +160,10 @@ public final class LangScanner extends beaver.Scanner {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\1\0\2\11\4\1\6\11\12\1";
+    "\1\0\2\11\5\1\6\11\12\1";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[23];
+    int [] result = new int[24];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -608,55 +611,59 @@ public final class LangScanner extends beaver.Scanner {
         case 1: 
           { throw new SyntaxError("Illegal character <"+yytext()+">");
           }
-        case 14: break;
+        case 15: break;
         case 2: 
           { 
           }
-        case 15: break;
+        case 16: break;
         case 3: 
           { return sym(Terminals.ID);
           }
-        case 16: break;
-        case 4: 
-          { return sym(Terminals.ASSIGN);
-          }
         case 17: break;
-        case 5: 
-          { return sym(Terminals.LPAR);
+        case 4: 
+          { return sym(Terminals.NUMERAL);
           }
         case 18: break;
-        case 6: 
-          { return sym(Terminals.RPAR);
+        case 5: 
+          { return sym(Terminals.ASSIGN);
           }
         case 19: break;
-        case 7: 
-          { return sym(Terminals.LBRACKET);
+        case 6: 
+          { return sym(Terminals.LPAR);
           }
         case 20: break;
-        case 8: 
-          { return sym(Terminals.RBRACKET);
+        case 7: 
+          { return sym(Terminals.RPAR);
           }
         case 21: break;
-        case 9: 
-          { return sym(Terminals.SEMI);
+        case 8: 
+          { return sym(Terminals.LBRACKET);
           }
         case 22: break;
-        case 10: 
-          { return sym(Terminals.IF);
+        case 9: 
+          { return sym(Terminals.RBRACKET);
           }
         case 23: break;
-        case 11: 
-          { return sym(Terminals.INT);
+        case 10: 
+          { return sym(Terminals.SEMI);
           }
         case 24: break;
-        case 12: 
-          { return sym(Terminals.ELSE);
+        case 11: 
+          { return sym(Terminals.IF);
           }
         case 25: break;
-        case 13: 
-          { return sym(Terminals.WHILE);
+        case 12: 
+          { return sym(Terminals.INT);
           }
         case 26: break;
+        case 13: 
+          { return sym(Terminals.ELSE);
+          }
+        case 27: break;
+        case 14: 
+          { return sym(Terminals.WHILE);
+          }
+        case 28: break;
         default: 
           if (zzInput == YYEOF && zzStartRead == zzCurrentPos) {
             zzAtEOF = true;

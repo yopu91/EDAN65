@@ -11,7 +11,7 @@
 
 
 %terminals ID, NUMERAL, ASSIGN, IF,ELSE, WHILE, INT;
-//RETURN
+//%terminals RETURN;
 //Structure terminals
 %terminals LPAR, RPAR, LBRACKET, RBRACKET, SEMI;
 
@@ -41,7 +41,7 @@
 program = function.a {: return new Program(a); :};
 function = paramFunc | callFunc;
 
-paramFunc = INT LPAR RPAR LBRACKET stmt_list.t RBRACKET SEMI?  {: return new ParamFunc(t); :};
+paramFunc = INT LPAR RPAR LBRACKET stmt_list.t  RBRACKET SEMI?  {: return new ParamFunc(t); :};
 
 callFunc = idUse.id LPAR RPAR {:return new CallFunc(id);:};
 

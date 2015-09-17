@@ -1,1 +1,1 @@
-int(){while(a){a=b;}}
+int f(){while(a){a=b;}}

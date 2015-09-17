@@ -1,4 +1,4 @@
-int(){
+int main(){
 	if(a){
 		a=b;
 	}

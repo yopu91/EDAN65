@@ -3,12 +3,17 @@ Program
     ParamFunc
       IdUse
       List
+        Param
+          Opt
+            IdUse
+      List
         IfStmt
           IdUse
-          Assignment
-            IdUse
-            IdUse
-          Opt
+          List
             Assignment
               IdUse
-              IdUse
+              List
+                IdUse
+        ReturnStmt
+          List
+            Numeral

@@ -28,7 +28,7 @@
 %typeof stmt = "Stmt";
 %typeof stmt_list = "List";
 %typeof ifStmt = "IfStmt";
-%typeof else_exp = "Opt";
+%typeof else = "ElseStmt";
 %typeof whileStmt = "WhileStmt";
 %typeof returnStmt = "ReturnStmt";
 %typeof assign = "Assignment";
@@ -40,17 +40,11 @@
 %typeof param_list = "List";
 %typeof arg = "Argument";
 %typeof arg_list = "List";
-%typeof mul = "Mul";
-%typeof div = "Div";
-%typeof sub = "Sub";
-%typeof mod = "Mod";
-%typeof add = "Add";
-%typeof eq_expr = "Eq";
-%typeof neq_expr = "Neq";
-%typeof gthn_expr = "Gthn";
-%typeof lthn_expr = "Lthn";
-%typeof geq_expr = "Geq";
-%typeof leq_expr = "Leq";
+%typeof expr_list = "List";
+%typeof idArg = "IdArg";
+%typeof funcArg = "FuncArg";
+%typeof factor = "Factor";
+%typeof term = "Term";
 
 
 %goal program;
@@ -65,34 +59,43 @@ funcStmt = idUse.id LPAR arg_list.l RPAR {:return new FuncStmt(id,l);:};
 
 stmt = ifStmt | whileStmt| declare | funcStmt | assign | returnStmt;
 
-ifStmt = IF LPAR expr.a RPAR LBRACKET stmt.t RBRACKET else_exp.e {:return new IfStmt(a,t,e);:};
+ifStmt = IF LPAR expr.a RPAR LBRACKET stmt_list.t RBRACKET else {:return new IfStmt(a,t);:};
 
 
 
 /****************************/
-param = INT idUse.id {:return new Param(id);:}
-        | COMMA INT idUse.id {: return new Param(id);:}
-        ;
+param = INT idUse.id {:return new Param(new Opt(id));:}
+	| COMMA INT idUse.id {: return new Param(new Opt(id));:}
+	| {:return new Param(new Opt());:}	
+	;
 /********************************/
 
 
-arg = 
-	idUse.id {:return new Argument(id);:}
-	| COMMA idUse.id {: return new Argument(id);:}
+arg = idArg | funcArg ;
+
+idArg = idUse.id {:return new IdArg(new Opt(id));:}
+	| COMMA idUse.id {:return new IdArg(new Opt(id));:}
 	;
 
-else_exp =
-	ELSE LBRACKET stmt.u RBRACKET {:return new Opt(u);:}
-	| /*epsilon*/ {: return new Opt();:}
+funcArg = funcStmt.t {:return new FuncArg(new Opt(t));:}
+	|  COMMA funcStmt.t {:return new FuncArg(new Opt(t));:}
+	|{:return new FuncArg(new Opt());:}
 	;
 
-whileStmt = WHILE LPAR expr.a RPAR LBRACKET stmt.t RBRACKET {:return new WhileStmt(a,t);:};
+
+
+else=
+	ELSE LBRACKET stmt_list.u RBRACKET {:return new ElseStmt(u);:}
+	|
+	;
+
+whileStmt = WHILE LPAR expr.a RPAR LBRACKET stmt_list.t RBRACKET {:return new WhileStmt(a,t);:};
 
 declare = INT idUse.id SEMI{: return new Declare(id);:};
 
-returnStmt = RETURN expr.a SEMI {: return new ReturnStmt(a);:};
+returnStmt = RETURN expr_list.a SEMI {: return new ReturnStmt(a);:};
 
-assign = idUse.id ASSIGN expr.a SEMI {:return new Assignment(id,a);:};
+assign = idUse.id ASSIGN expr_list.a SEMI {:return new Assignment(id,a);:};
 
 param_list =   
        	param.a {: return new List().add(a); :}
@@ -116,22 +119,35 @@ func_list =
         | func_list.a function.b {: return a.add(b); :}
         ;
 
-	
-mul = expr.a MUL expr.b {: return new Mul(a,b);:};
-add = expr.a ADD expr.b {: return new Add(a,b);:};
-sub = expr.a SUB expr.b {: return new Sub(a,b);:};
-div = expr.a DIV expr.b {: return new Div(a,b);:};
-mod = expr.a MOD expr.b {: return new Mod(a,b);:};
-eq_expr = expr.a EQ expr.b {: return new Eq(a,b);:};
-neq_expr = expr.a NEQ expr.b {: return new Neq(a,b);:};
-gthn_expr = expr.a GTHN expr.b {: return new Gthn(a,b);:};
-lthn_expr = expr.a LTHN expr.b {: return new Lthn(a,b);:};
-geq_expr = expr.a GEQ expr.b {: return new Geq(a,b);:};
-leq_expr = expr.a LEQ expr.b {:return new Leq(a,b);:};
+
+expr_list =
+        expr.a {: return new List().add(a); :}
+        | expr_list.a expr.b {: return a.add(b); :}
+        ;
 
 
+bin_exp = term.a MUL factor.b {:return new Mul(a,b);:}
+	| expr.a ADD term.b {: return new Add(a,b);:}
+	| expr.a SUB term.b {: return new Sub(a,b);:}
+	| term.a DIV factor.b {: return new Div(a,b);:}
+	| term.a MOD factor.b {: return new Mod(a,b);:}
+	| expr.a EQ expr.b {: return new Eq(a,b);:}
+	| expr.a NEQ expr.b {: return new Neq(a,b);:}
+	| expr.a GTHN expr.b {: return new Gthn(a,b);:}
+	| expr.a LTHN expr.b {: return new Lthn(a,b);:}
+	| expr.a GEQ expr.b {: return new Geq(a,b);:}
+	| expr.a LEQ expr.b {:return new Leq(a,b);:}
+	;
 
+term = term MUL factor |
+	term DIV factor|
+	term MOD factor
+	| factor;
 
-expr = numeral | idUse | mul | add | sub | div | mod | eq_expr | neq_expr | gthn_expr | lthn_expr | geq_expr | leq_expr;
+factor = numeral | idUse ;
+
+expr = numeral | idUse | bin_exp;
 numeral = NUMERAL.num {:return new Numeral(num);:};
 idUse = ID.id {:return new IdUse(id);:};
+
+

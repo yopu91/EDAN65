@@ -2,33 +2,42 @@ Program ::= Function*;
 
 abstract Function;
 ParamFunc:Function 	::= IdUse Param* Stmt*;
-Param			::= IdUse;
+Param			::= [IdUse];
 
 abstract Stmt;
 
-WhileStmt:Stmt		::= Cond:Expr Stmt;
-IfStmt:Stmt		::= Cond:Expr Then:Stmt [Else:Stmt]; 
-ReturnStmt:Stmt		::= Expr;
+WhileStmt:Stmt		::= Cond:Expr Stmt*;
+IfStmt:Stmt		::= Cond:Expr Then:Stmt*;
+ElseStmt:Stmt		::= Stmt*; 
+ReturnStmt:Stmt		::= Expr*;
 FuncStmt:Stmt		::= IdUse Argument*;
-Argument 		::= IdUse;
-Assignment:Stmt 	::= IdUse Expr;
+
+abstract Argument;
+IdArg:Argument 		::= [IdUse];
+FuncArg:Argument	::= [FuncStmt];
+ExprArg:Argument	::= [Expr];
+
+Assignment:Stmt		::= IdUse Expr*;
 Declare:Stmt		::= IdUse;
 
 
 abstract Expr;
-Numeral:Expr		::=<NUMERAL>;
-IdUse:Expr		::=<ID>;
+Numeral:Expr		::= <NUMERAL>;
+IdUse:Expr		::= <ID>;
+BinaryExpr:Expr		::= Expr;
+Term:Expr		::= [Expr] Factor;
+Factor:Expr		::= Expr;
 
-Add:Expr		::= Left:Expr Right:Expr;
-Sub:Expr		::= Left:Expr Right:Expr;
-Div:Expr		::= Left:Expr Right:Expr;
-Mul:Expr		::= Left:Expr Right:Expr;
-Mod:Expr		::= Left:Expr Right:Expr;
+Add:BinaryExpr		::= Left:Expr Right:Term;
+Sub:BinaryExpr		::= Left:Expr Right:Term;
+Div:BinaryExpr		::= Left:Term Right:Factor;
+Mul:BinaryExpr		::= Left:Term Right:Factor;
+Mod:BinaryExpr		::= Left:Term Right:Factor;
 
-Neq:Expr                ::= Left:Expr Right:Expr;
-Eq:Expr                ::= Left:Expr Right:Expr;
-Leq:Expr                ::= Left:Expr Right:Expr;
-Lthn:Expr                ::= Left:Expr Right:Expr;
-Geq:Expr                ::= Left:Expr Right:Expr;
-Gthn:Expr                ::= Left:Expr Right:Expr;
+Neq:BinaryExpr                ::= Left:Expr Right:Expr;
+Eq:BinaryExpr                ::= Left:Expr Right:Expr;
+Leq:BinaryExpr                ::= Left:Expr Right:Expr;
+Lthn:BinaryExpr                ::= Left:Expr Right:Expr;
+Geq:BinaryExpr                ::= Left:Expr Right:Expr;
+Gthn:BinaryExpr                ::= Left:Expr Right:Expr;
 

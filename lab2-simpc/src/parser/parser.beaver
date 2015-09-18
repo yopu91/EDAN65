@@ -35,6 +35,7 @@
 %typeof expr ="Expr";
 %typeof numeral = "Numeral";
 %typeof idUse = "IdUse";
+%typeof expr_list = "List";
 
 %goal program;
 
@@ -66,3 +67,5 @@ stmt_list = stmt.a {:return new List().add(a);:} | stmt_list.a stmt.b {:return a
 expr = numeral | idUse;
 numeral = NUMERAL.num {:return new Numeral(num);:};
 idUse = ID.id {:return new IdUse(id);:};
+
+

@@ -72,14 +72,14 @@ ifStmt = IF LPAR expr.a RPAR LBRACKET stmt.t RBRACKET else_exp.e {:return new If
 /****************************/
 param = INT idUse.id {:return new Param(id);:}
         | COMMA INT idUse.id {: return new Param(id);:}
-        ;
+        | ;
 /********************************/
 
 
 arg = 
 	idUse.id {:return new Argument(id);:}
 	| COMMA idUse.id {: return new Argument(id);:}
-	;
+	| ;
 
 else_exp =
 	ELSE LBRACKET stmt.u RBRACKET {:return new Opt(u);:}

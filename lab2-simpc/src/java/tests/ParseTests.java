@@ -43,6 +43,11 @@ public class ParseTests extends AbstractTestSuite {
                 testValidSyntax("manyFunc.c");
         }
 
+
+	@Test
+	public void validSyntaxIf() {
+		testValidSyntax("if.c");
+	}
 //	public void syntaxErrorMethod() {
 //		testSyntaxError("error.lang");
 //	}

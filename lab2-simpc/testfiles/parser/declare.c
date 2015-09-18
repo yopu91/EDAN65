@@ -2,7 +2,6 @@ int a(){
 	
 	int a;
 	int b;
-	a = c(a,b);
-	int d = e();
+	a = (a,b);
 	return 0;
 }

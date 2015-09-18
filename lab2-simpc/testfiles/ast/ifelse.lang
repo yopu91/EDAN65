@@ -1,8 +1,9 @@
-int(){
+int main(){
 	if(a){
 		a=b;
 	}
 	else{
 		b=a;
 	}
+return 8;
 }

@@ -1,6 +1,8 @@
 Program
-  ParamFunc
-    List
-      Assignment
-        IdUse
-        IdUse
+  List
+    ParamFunc
+      IdUse
+      List
+        Assignment
+          IdUse
+          IdUse

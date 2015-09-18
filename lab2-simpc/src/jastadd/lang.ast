@@ -1,21 +1,34 @@
-Program ::= Function;
+Program ::= Function*;
 
 abstract Function;
-ParamFunc:Function ::=  Stmt*;
-CallFunc:Function  ::= IdUse;
+ParamFunc:Function 	::= IdUse Param* Stmt*;
+Param			::= IdUse;
 
 abstract Stmt;
-WhileStmt:Stmt	::= Cond:Expr Stmt;
-IfStmt:Stmt	::= Cond:Expr Then:Stmt [Else:Stmt]; 
-ReturnStmt:Stmt	::= Expr;
-Assignment:Stmt ::= IdUse Expr;
-Declare:Stmt::= IdUse;
+
+WhileStmt:Stmt		::= Cond:Expr Stmt;
+IfStmt:Stmt		::= Cond:Expr Then:Stmt [Else:Stmt]; 
+ReturnStmt:Stmt		::= Expr;
+FuncStmt:Stmt		::= IdUse Argument*;
+Argument 		::= IdUse;
+Assignment:Stmt 	::= IdUse Expr;
+Declare:Stmt		::= IdUse;
+
 
 abstract Expr;
-Numeral:Expr	::=<NUMERAL>;
-IdUse:Expr	::=<ID>;
-Add:Expr	::=Expr*;
-Sub:Expr	::=Expr*;
-Mul:Expr	::=Expr*;
-Div:Expr	::=Expr*;
-Mod:Expr	::=Expr*;
+Numeral:Expr		::=<NUMERAL>;
+IdUse:Expr		::=<ID>;
+
+Add:Expr		::= Left:Expr Right:Expr;
+Sub:Expr		::= Left:Expr Right:Expr;
+Div:Expr		::= Left:Expr Right:Expr;
+Mul:Expr		::= Left:Expr Right:Expr;
+Mod:Expr		::= Left:Expr Right:Expr;
+
+Neq:Expr                ::= Left:Expr Right:Expr;
+Eq:Expr                ::= Left:Expr Right:Expr;
+Leq:Expr                ::= Left:Expr Right:Expr;
+Lthn:Expr                ::= Left:Expr Right:Expr;
+Geq:Expr                ::= Left:Expr Right:Expr;
+Gthn:Expr                ::= Left:Expr Right:Expr;
+

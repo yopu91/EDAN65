@@ -1,8 +1,9 @@
-int(){
+int g(){
 if(a){
 a=a;
 }
 if(b){
 b=b;}
+return 0;
 }
 

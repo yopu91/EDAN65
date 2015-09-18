@@ -1,3 +1,4 @@
-int(){
+int t(){
 a=b;
-};
+return 0;
+}

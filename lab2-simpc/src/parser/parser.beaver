@@ -43,9 +43,12 @@
 %typeof expr_list = "List";
 %typeof idArg = "IdArg";
 %typeof funcArg = "FuncArg";
-%typeof factor = "Factor";
 %typeof term = "Term";
+%typeof compare = "Compare";
+%typeof plusminus = "PlusMinus";
+%typeof divmult = "DivMult";
 
+%left MUL, DIV, MOD;
 
 %goal program;
 
@@ -126,27 +129,40 @@ expr_list =
         ;
 
 
-bin_exp = term.a MUL factor.b {:return new Mul(a,b);:}
-	| expr.a ADD term.b {: return new Add(a,b);:}
-	| expr.a SUB term.b {: return new Sub(a,b);:}
-	| term.a DIV factor.b {: return new Div(a,b);:}
-	| term.a MOD factor.b {: return new Mod(a,b);:}
-	| expr.a EQ expr.b {: return new Eq(a,b);:}
-	| expr.a NEQ expr.b {: return new Neq(a,b);:}
-	| expr.a GTHN expr.b {: return new Gthn(a,b);:}
-	| expr.a LTHN expr.b {: return new Lthn(a,b);:}
-	| expr.a GEQ expr.b {: return new Geq(a,b);:}
-	| expr.a LEQ expr.b {:return new Leq(a,b);:}
+compare = 
+	| term.a EQ term.b {: return new Eq(a,b);:}
+	| term.a NEQ term.b {: return new Neq(a,b);:}
+	| term.a GTHN term.b {: return new Gthn(a,b);:}
+	| term.a LTHN term.b {: return new Lthn(a,b);:}
+	| term.a GEQ term.b {: return new Geq(a,b);:}
+	| term.a LEQ term.b {:return new Leq(a,b);:}
 	;
 
-term = term MUL factor |
-	term DIV factor|
-	term MOD factor
-	| factor;
 
-factor = numeral | idUse ;
 
-expr = numeral | idUse | bin_exp;
+plusminus = divmult.a ADD plusminus.b {:return new Add(a,b);:} 
+	| divmult.a SUB plusminus.b {:return new Sub(a,b);:}  
+	;
+
+divmult = term.a MUL divmult.b {:return new Mul(a,b);:}
+	| term.a DIV divmult.b {:return new Div(a,b);:}
+	| term.a MOD divmult.b {:return new Mod(a,b);:}
+	| term.a {:return new Term(a);:} 
+	; 
+
+term =  idUse | numeral | LPAR plusminus RPAR;
+
+
+
+//Expr -> DivMult -> Term -> idUse/Numeral
+
+expr = divmult.a {:return new DivMult(a);:}
+	 | plusminus.a {:return new PlusMinus(a);:} 
+	 | compare.a {:return new Compare(a);:} 
+	 ;
+
+
+
 numeral = NUMERAL.num {:return new Numeral(num);:};
 idUse = ID.id {:return new IdUse(id);:};
 

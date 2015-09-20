@@ -25,19 +25,23 @@ abstract Expr;
 Numeral:Expr		::= <NUMERAL>;
 IdUse:Expr		::= <ID>;
 BinaryExpr:Expr		::= Expr;
-Term:Expr		::= [Expr] Factor;
-Factor:Expr		::= Expr;
 
-Add:BinaryExpr		::= Left:Expr Right:Term;
-Sub:BinaryExpr		::= Left:Expr Right:Term;
-Div:BinaryExpr		::= Left:Term Right:Factor;
-Mul:BinaryExpr		::= Left:Term Right:Factor;
-Mod:BinaryExpr		::= Left:Term Right:Factor;
+DivMult:BinaryExpr	::= Expr;
+PlusMinus:BinaryExpr 	::= Expr;
+Compare:BinaryExpr	::= Expr;
 
-Neq:BinaryExpr                ::= Left:Expr Right:Expr;
-Eq:BinaryExpr                ::= Left:Expr Right:Expr;
-Leq:BinaryExpr                ::= Left:Expr Right:Expr;
-Lthn:BinaryExpr                ::= Left:Expr Right:Expr;
-Geq:BinaryExpr                ::= Left:Expr Right:Expr;
-Gthn:BinaryExpr                ::= Left:Expr Right:Expr;
+Term:Expr 		::= Expr;
+
+Add:Expr		::= Left:DivMult Right:PlusMinus;
+Sub:Expr		::= Left:DivMult Right:PlusMinus;
+Div:Expr		::= Left:Term Right:DivMult;
+Mul:Expr		::= Left:Term Right:DivMult;
+Mod:Expr		::= Left:Term Right:DivMult;
+
+Neq:Expr	        ::= Left:Term Right:Term;
+Eq:Expr		        ::= Left:Term Right:Term;
+Leq:Expr	        ::= Left:Term Right:Term;
+Lthn:Expr	        ::= Left:Term Right:Term;
+Geq:Expr	        ::= Left:Term Right:Term;
+Gthn:Expr	        ::= Left:Term Right:Term;
 

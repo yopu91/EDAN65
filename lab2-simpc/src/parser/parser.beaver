@@ -48,7 +48,7 @@
 %typeof plusminus = "PlusMinus";
 %typeof divmult = "DivMult";
 
-%left MUL, DIV, MOD;
+%left COMMA, MUL, DIV, MOD;
 
 %goal program;
 
@@ -64,25 +64,38 @@ stmt = ifStmt | whileStmt| declare | funcStmt | assign | returnStmt;
 
 ifStmt = IF LPAR expr.a RPAR LBRACKET stmt_list.t RBRACKET else {:return new IfStmt(a,t);:};
 
+/************OLD VERSION param****************/
 
-
-/****************************/
 param = INT idUse.id {:return new Param(new Opt(id));:}
 	| COMMA INT idUse.id {: return new Param(new Opt(id));:}
-	| {:return new Param(new Opt());:}	
+//	| {:return new Param(new Opt());:}	
 	;
-/********************************/
 
 
-arg = idArg | funcArg ;
+/*************NEW version param*****************************/
+/*
+param = INT idUse.id COMMA INT idUse.right {:return new Param(new Opt(id),new Opt(right));:}
+        | INT idUse.id {: return new Param(new Opt(id));:}
+       // | {:return new Param(new Opt());:}
+        ;
+*/
+
+
+arg = idArg | funcArg;
+
+
+
+
+
 
 idArg = idUse.id {:return new IdArg(new Opt(id));:}
 	| COMMA idUse.id {:return new IdArg(new Opt(id));:}
+//	| {: return new IdArg(newOpt());:}
 	;
 
 funcArg = funcStmt.t {:return new FuncArg(new Opt(t));:}
-	|  COMMA funcStmt.t {:return new FuncArg(new Opt(t));:}
-	|{:return new FuncArg(new Opt());:}
+	| COMMA funcStmt.t {:return new FuncArg(new Opt(t));:}
+//222	| {:return new FuncArg(new Opt());:}
 	;
 
 
@@ -94,7 +107,7 @@ else=
 
 whileStmt = WHILE LPAR expr.a RPAR LBRACKET stmt_list.t RBRACKET {:return new WhileStmt(a,t);:};
 
-declare = INT idUse.id SEMI{: return new Declare(id);:};
+declare = INT idUse.id SEMI {: return new Declare(id);:};
 
 returnStmt = RETURN expr_list.a SEMI {: return new ReturnStmt(a);:};
 
@@ -129,8 +142,7 @@ expr_list =
         ;
 
 
-compare = 
-	| term.a EQ term.b {: return new Eq(a,b);:}
+compare =  term.a EQ term.b {: return new Eq(a,b);:}
 	| term.a NEQ term.b {: return new Neq(a,b);:}
 	| term.a GTHN term.b {: return new Gthn(a,b);:}
 	| term.a LTHN term.b {: return new Lthn(a,b);:}

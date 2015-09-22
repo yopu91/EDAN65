@@ -39,19 +39,17 @@
 %typeof param = "Param";
 %typeof param_list = "List";
 %typeof arg_list = "List";
-//%typeof idArg = "IdArg";
-//%typeof funcArg = "FuncArg";
-//%typeof term = "Term";
-%typeof compare = "Compare";
-%typeof plusminus = "PlusMinus";
-%typeof divmult = "DivMult";
 %typeof funccall = "FuncCall";
 %typeof iddecl = "IdDecl";
-
-
-%left  MUL, DIV, MOD, ADD, SUB, EQ, NEQ, LEQ, GEQ, LTHN, GTHN;
+%typeof term = "Expr";
+%typeof factor = "Expr";
+%typeof compare = "Expr";
 
 %goal program;
+
+
+
+
 
 program = func_list.a {: return new Program(a); :};
 
@@ -61,57 +59,27 @@ paramFunc = iddecl.id LPAR param_list.p RPAR LBRACKET stmt_list.t RBRACKET  {: r
 
 funccall = idUse.id LPAR arg_list.l RPAR {:return new FuncCall(id,l);:};
 
-
-/* GENERATES ERROR */
 funcStmt = funccall.a {:return new FuncStmt(a);:};
 
 stmt = ifStmt | whileStmt| declare | funcStmt | assign | returnStmt;
 
 ifStmt = IF LPAR expr.a RPAR LBRACKET stmt_list.t RBRACKET else {:return new IfStmt(a,t);:};
 
+param = iddecl.id {:return new Param(id);:};
 
+param_list = param.par {: return new List().add(par); :}
+       	 | param_list.a COMMA param.par {: return a.add(par); :}
+       	 | {: return new List();:} /*Returns an empty list i.e no arguments*/
+       	 ;
 
-param = iddecl.id {:return new Param(id);:}
-	| COMMA iddecl.id {: return new Param(id);:}	
-	;
+arg = expr;
 
-param_list = param.a {: return new List().add(a); :}
-        | param_list.a param.b {: return a.add(b); :}
-        | {: return new List();:} /*Returns an empty list i.e no arguments*/
-        ;
-
-
-
-
-arg = 
-	idUse.id {:return new IdUse(id);:}
-	| funcStmt.t {:return new FuncStmt(t);:}
-	| COMMA arg
-	;
-
-
-/****************Replaced by "arg" above*************************
-
-
-arg = idArg | funcArg;
-
-idArg = idUse.id {:return new IdUse(id);:}
-	| COMMA idUse.id {:return new IdUse(id);:}
-	;
-
-funcArg = funcStmt.t {:return new FuncCall(t);:}
-	| COMMA funcStmt.t {:return new FuncCall(t);:}
-	;
-
-**************************************************/
 
 arg_list =
-        arg.a {: return new List().add(a); :}
-        |  arg_list.a arg.b {: return a.add(b); :}
+        arg.ar {: return new List().add(ar); :}
+        | arg_list.a COMMA arg.ar {: return a.add(ar); :}
         | {: return new List();:}
         ;
-
-
 
 
 else=
@@ -121,8 +89,8 @@ else=
 
 whileStmt = WHILE LPAR expr.a RPAR LBRACKET stmt_list.t RBRACKET {:return new WhileStmt(a,t);:};
 
-declare = iddecl.id SEMI {: return new Declare(id);:}
-	| INT assign.a {: return new Declare(new Opt(a));:}
+declare = iddecl.id SEMI {: return new Declare(id, new Opt());:} 
+	| iddecl.id ASSIGN expr.a SEMI {: return new Declare(id,new Opt(a));:}
 	;
 
 returnStmt = RETURN stmt_list.a SEMI {: return new ReturnStmt(a);:};
@@ -132,13 +100,13 @@ assign = idUse.id ASSIGN expr.a SEMI {:return new Assignment(id,a);:};
 
 
 stmt_list =
-	stmt.a {: return new List().add(a); :}
-	| stmt_list.a stmt.b {: return a.add(b); :}
+	stmt.st {: return new List().add(st); :}
+	| stmt_list.a COMMA stmt.st {: return a.add(st); :}
 	;
 
 func_list =
-        function.a {: return new List().add(a); :}
-        | func_list.a function.b {: return a.add(b); :}
+        function.func {: return new List().add(func); :}
+        | func_list.a COMMA function.func {: return a.add(func); :}
         ;
 
 
@@ -152,20 +120,24 @@ compare = expr.a EQ expr.b {: return new Eq(a,b);:}
 
 
 
-plusminus = divmult.a ADD plusminus.b {:return new Add(a,b);:} 
-	| divmult.a SUB plusminus.b {:return new Sub(a,b);:}  
+expr = 
+	expr.a ADD term.b {: return new Add(a, b); :}
+	| expr.a SUB term.b {: return new Sub(a, b); :}
+	;
+	
+term = 
+	 expr.a MUL factor.b {: return new Mul(a, b); :}
+	| expr.a DIV factor.b {: return new Div(a, b); :}
+	| expr.a MOD factor.b {: return new Mod(a, b); :}
+	| compare
+	;
+	
+factor = numeral
+	| funcStmt
+	| idUse 
+	//| compare
 	;
 
-divmult = expr.a MUL divmult.b {:return new Mul(a,b);:}
-	| expr.a DIV divmult.b {:return new Div(a,b);:}
-	| expr.a MOD divmult.b {:return new Mod(a,b);:} 
-	; 
-
-term =  idUse | numeral | LPAR plusminus RPAR;
-
-binary_expr = divmult | plusminus | compare;
-
-expr = binary_expr | term | funccall;
 
 
 numeral = NUMERAL.num {:return new Numeral(num);:};

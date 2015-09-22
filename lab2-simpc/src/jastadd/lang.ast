@@ -17,9 +17,6 @@ FuncStmt:Stmt 		::= FuncCall; /*Needed to solve if(func(3)+1 > 2)... or is it re
 Assignment:Stmt		::= IdUse Expr;
 Declare:Stmt		::= IdDecl [Expr];
 
-/*
-REMOVED: ARGUMENT --> Redundant since they all evaluate to EXPR anyway
-*/
 
 abstract Expr;
 Numeral:Expr		::= <NUMERAL>;
@@ -40,14 +37,3 @@ Leq:BinaryExpr;	// 	::= Left:Term Right:Term;
 Lthn:BinaryExpr;// 	::= Left:Term Right:Term;
 Geq:BinaryExpr;	//  	::= Left:Term Right:Term;
 Gthn:BinaryExpr;// 	::= Left:Term Right:Term;
-
-
-
-
-
-
-DivMult:BinaryExpr;//           ::= Expr;
-PlusMinus:BinaryExpr;//                 ::= Expr;
-Compare:BinaryExpr;//           ::= Expr;
-
-

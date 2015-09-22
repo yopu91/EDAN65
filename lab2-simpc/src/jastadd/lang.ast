@@ -1,8 +1,8 @@
 Program ::= Function*;
 
 abstract Function;
-ParamFunc:Function 	::= IdUse Param* Stmt*;
-Param			::= [IdUse];
+ParamFunc:Function 	::= IdDecl Param* Stmt*;
+Param			::= IdDecl;
 
 abstract Stmt;
 
@@ -10,38 +10,44 @@ WhileStmt:Stmt		::= Cond:Expr Stmt*;
 IfStmt:Stmt		::= Cond:Expr Then:Stmt*;
 ElseStmt:Stmt		::= Stmt*; 
 ReturnStmt:Stmt		::= Expr*;
-FuncStmt:Stmt		::= IdUse Argument*;
+FuncCall:Expr		::= IdUse Expr*;
 
-abstract Argument;
-IdArg:Argument 		::= [IdUse];
-FuncArg:Argument	::= [FuncStmt];
-ExprArg:Argument	::= [Expr];
+FuncStmt:Stmt 		::= FuncCall; /*Needed to solve if(func(3)+1 > 2)... or is it really needed?*/
 
-Assignment:Stmt		::= IdUse Expr*;
-Declare:Stmt		::= IdUse;
+Assignment:Stmt		::= IdUse Expr;
+Declare:Stmt		::= IdDecl [Expr];
 
+/*
+REMOVED: ARGUMENT --> Redundant since they all evaluate to EXPR anyway
+*/
 
 abstract Expr;
 Numeral:Expr		::= <NUMERAL>;
-IdUse:Expr		::= <ID>;
-BinaryExpr:Expr		::= Expr;
+IdUse:Expr		::= <ID>; //använd
+IdDecl			::= <ID>; //deklarera
 
-DivMult:BinaryExpr	::= Expr;
-PlusMinus:BinaryExpr 	::= Expr;
-Compare:BinaryExpr	::= Expr;
+BinaryExpr:Expr		::= Left:Expr Right:Expr;
 
-Term:Expr 		::= Expr;
+Add:BinaryExpr;	//	::= Left:DivMult Right:PlusMinus;
+Sub:BinaryExpr;	//  	::= Left:DivMult Right:PlusMinus;
+Div:BinaryExpr;	//  	::= Left:Term Right:DivMult;
+Mul:BinaryExpr;	//  	::= Left:Term Right:DivMult;
+Mod:BinaryExpr;	//  	::= Left:Term Right:DivMult;
 
-Add:Expr		::= Left:DivMult Right:PlusMinus;
-Sub:Expr		::= Left:DivMult Right:PlusMinus;
-Div:Expr		::= Left:Term Right:DivMult;
-Mul:Expr		::= Left:Term Right:DivMult;
-Mod:Expr		::= Left:Term Right:DivMult;
+Neq:BinaryExpr;	// 	::= Left:Term Right:Term;
+Eq:BinaryExpr;	// 	::= Left:Term Right:Term;
+Leq:BinaryExpr;	// 	::= Left:Term Right:Term;
+Lthn:BinaryExpr;// 	::= Left:Term Right:Term;
+Geq:BinaryExpr;	//  	::= Left:Term Right:Term;
+Gthn:BinaryExpr;// 	::= Left:Term Right:Term;
 
-Neq:Expr	        ::= Left:Term Right:Term;
-Eq:Expr		        ::= Left:Term Right:Term;
-Leq:Expr	        ::= Left:Term Right:Term;
-Lthn:Expr	        ::= Left:Term Right:Term;
-Geq:Expr	        ::= Left:Term Right:Term;
-Gthn:Expr	        ::= Left:Term Right:Term;
+
+
+
+
+
+DivMult:BinaryExpr;//           ::= Expr;
+PlusMinus:BinaryExpr;//                 ::= Expr;
+Compare:BinaryExpr;//           ::= Expr;
+
 

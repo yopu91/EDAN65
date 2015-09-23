@@ -74,7 +74,6 @@ param_list = param.par {: return new List().add(par); :}
 
 arg = expr;
 
-
 arg_list =
         arg.ar {: return new List().add(ar); :}
         | arg_list.a COMMA arg.ar {: return a.add(ar); :}
@@ -108,7 +107,7 @@ stmt_list =
 
 func_list =
         function.func {: return new List().add(func); :}
-        | func_list.a COMMA function.func {: return a.add(func); :}
+        | func_list.a function.func {: return a.add(func); :}
         ;
 
 /*
@@ -119,8 +118,8 @@ compare = expr.a EQ expr.b {: return new Eq(a,b);:}
 	| expr.a GEQ expr.b {: return new Geq(a,b);:}
 	| expr.a LEQ expr.b {:return new Leq(a,b);:}
 	;
-*/
 
+*/
 compare = factor.a EQ factor.b {: return new Eq(a,b);:}
         | factor.a NEQ factor.b {: return new Neq(a,b);:}
         | factor.a GTHN factor.b {: return new Gthn(a,b);:}
@@ -130,20 +129,18 @@ compare = factor.a EQ factor.b {: return new Eq(a,b);:}
         ;
 
 
-
 expr = 
 	expr.a ADD term.b {: return new Add(a, b); :}
 	| expr.a SUB term.b {: return new Sub(a, b); :}
-//	| term
-	| factor
+	| term
 	| compare
 	;
 	
 
 term = 
-	 expr.a MUL factor.b {: return new Mul(a, b); :}
-	| expr.a DIV factor.b {: return new Div(a, b); :}
-	| expr.a MOD factor.b {: return new Mod(a, b); :}
+	 term.a MUL factor.b {: return new Mul(a, b); :}
+	| term.a DIV factor.b {: return new Div(a, b); :}
+	| term.a MOD factor.b {: return new Mod(a, b); :}
 	| factor
 	;
 	

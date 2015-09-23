@@ -120,12 +120,13 @@ compare = expr.a EQ expr.b {: return new Eq(a,b);:}
 	;
 
 */
-compare = factor.a EQ factor.b {: return new Eq(a,b);:}
-        | factor.a NEQ factor.b {: return new Neq(a,b);:}
-        | factor.a GTHN factor.b {: return new Gthn(a,b);:}
-        | factor.a LTHN factor.b {: return new Lthn(a,b);:}
-        | factor.a GEQ factor.b {: return new Geq(a,b);:}
-        | factor.a LEQ factor.b {:return new Leq(a,b);:}
+
+compare = expr.a EQ factor.b {: return new Eq(a,b);:}
+        | expr.a NEQ factor.b {: return new Neq(a,b);:}
+        | expr.a GTHN factor.b {: return new Gthn(a,b);:}
+        | expr.a LTHN factor.b {: return new Lthn(a,b);:}
+        | expr.a GEQ factor.b {: return new Geq(a,b);:}
+        | expr.a LEQ factor.b {:return new Leq(a,b);:}
         ;
 
 
@@ -145,7 +146,6 @@ term =
 	;
 	
 factor = numeral
-//	| funccall
 	| funcStmt
 	| idUse  
 	;

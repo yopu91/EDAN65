@@ -1,19 +1,16 @@
 Program
   List
     ParamFunc
-      IdUse
+      IdDecl
       List
         Param
-          Opt
-            IdUse
+          IdDecl
       List
         IfStmt
           IdUse
           List
             Assignment
               IdUse
-              List
-                IdUse
+              IdUse
         ReturnStmt
-          List
-            Numeral
+          Numeral

@@ -9,7 +9,7 @@ abstract Stmt;
 WhileStmt:Stmt		::= Cond:Expr Stmt*;
 IfStmt:Stmt		::= Cond:Expr Then:Stmt*;
 ElseStmt:Stmt		::= Stmt*; 
-ReturnStmt:Stmt		::= Expr*;
+ReturnStmt:Stmt		::= Expr;
 FuncCall:Expr		::= IdUse Expr*;
 
 FuncStmt:Stmt 		::= FuncCall; /*Needed to solve if(func(3)+1 > 2)... or is it really needed?*/

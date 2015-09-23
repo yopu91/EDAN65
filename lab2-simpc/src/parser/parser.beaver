@@ -44,7 +44,6 @@
 %typeof term = "Expr";
 %typeof factor = "Expr";
 %typeof compare = "Expr";
-
 %goal program;
 
 
@@ -59,9 +58,10 @@ paramFunc = INT iddecl.id LPAR param_list.p RPAR LBRACKET stmt_list.t RBRACKET  
 
 funccall = idUse.id LPAR arg_list.l RPAR {:return new FuncCall(id,l);:};
 
-funcStmt = funccall.a {:return new FuncStmt(a);:};
+funcStmt = funccall.a SEMI {:return new FuncStmt(a);:};
 
-stmt = ifStmt | whileStmt| declare | funcStmt | assign | returnStmt;
+stmt = ifStmt | whileStmt| declare | assign | returnStmt | funcStmt;
+
 
 ifStmt = IF LPAR expr.a RPAR LBRACKET stmt_list.t RBRACKET else {:return new IfStmt(a,t);:};
 
@@ -94,7 +94,7 @@ declare = INT iddecl.id SEMI {: return new Declare(id, new Opt());:}
 	| INT iddecl.id ASSIGN expr.a SEMI {: return new Declare(id,new Opt(a));:}
 	;
 
-returnStmt = RETURN stmt_list.a SEMI {: return new ReturnStmt(a);:};
+returnStmt = RETURN expr.a SEMI {: return new ReturnStmt(a);:};
 
 
 assign = idUse.id ASSIGN expr.a SEMI {:return new Assignment(id,a);:};
@@ -102,7 +102,7 @@ assign = idUse.id ASSIGN expr.a SEMI {:return new Assignment(id,a);:};
 
 stmt_list =
 	stmt.st {: return new List().add(st); :}
-	| stmt_list.a COMMA stmt.st {: return a.add(st); :}
+	| stmt_list.a stmt.st {: return a.add(st); :}
 	;
 
 func_list =
@@ -145,6 +145,7 @@ term =
 	;
 	
 factor = numeral
+//	| funccall
 	| funcStmt
 	| idUse  
 	;

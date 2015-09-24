@@ -30,6 +30,12 @@ public class ParseTests extends AbstractTestSuite {
 	}
 
 	@Test
+        public void validSyntaxbigtest() {
+                testValidSyntax("bigtest.lang");
+        }
+
+
+	@Test
 	public void validSyntaxIfElse() {
 		testValidSyntax("ifelse.c");
 	}

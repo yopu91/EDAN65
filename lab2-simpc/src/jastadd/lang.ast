@@ -1,7 +1,5 @@
-Program ::= Function*;
-
-abstract Function;
-ParamFunc:Function 	::= IdDecl Param* Stmt*;
+Program ::= ParamFunc*;
+ParamFunc	 	::= IdDecl Param* Stmt*;
 Param			::= IdDecl;
 
 abstract Stmt;

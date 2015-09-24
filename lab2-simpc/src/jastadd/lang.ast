@@ -1,3 +1,5 @@
+/*FINITO*/
+
 Program ::= ParamFunc*;
 ParamFunc	 	::= IdDecl Param* Stmt*;
 Param			::= IdDecl;
@@ -10,7 +12,7 @@ ElseStmt:Stmt		::= Stmt*;
 ReturnStmt:Stmt		::= Expr;
 FuncCall:Expr		::= IdUse Expr*;
 
-FuncStmt:Stmt 		::= FuncCall; /*Needed to solve if(func(3)+1 > 2)... or is it really needed?*/
+FuncStmt:Stmt 		::= FuncCall; 
 
 Assignment:Stmt		::= IdUse Expr;
 Declare:Stmt		::= IdDecl [Expr];

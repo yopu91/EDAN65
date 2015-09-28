@@ -7,7 +7,7 @@ Param			::= IdDecl;
 abstract Stmt;
 
 WhileStmt:Stmt		::= Cond:Expr Stmt*;
-IfStmt:Stmt		::= Cond:Expr Then:Stmt*;
+IfStmt:Stmt		::= Cond:Expr Then:Stmt* [ElseStmt];
 ElseStmt:Stmt		::= Stmt*; 
 ReturnStmt:Stmt		::= Expr;
 FuncCall:Expr		::= IdUse Expr*;

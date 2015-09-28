@@ -23,6 +23,11 @@ Program
                 IdUse
             ReturnStmt
               IdUse
+          Opt
+            ElseStmt
+              List
+                ReturnStmt
+                  IdUse
         Assignment
           IdUse
           Numeral

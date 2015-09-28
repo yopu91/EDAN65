@@ -12,5 +12,11 @@ Program
             Assignment
               IdUse
               IdUse
+          Opt
+            ElseStmt
+              List
+                Assignment
+                  IdUse
+                  IdUse
         ReturnStmt
           Numeral

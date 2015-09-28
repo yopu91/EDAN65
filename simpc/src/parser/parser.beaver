@@ -62,7 +62,7 @@ funcStmt = funccall.a SEMI {:return new FuncStmt(a);:};
 stmt = ifStmt | whileStmt| declare | assign | returnStmt | funcStmt;
 
 
-ifStmt = IF LPAR expr.a RPAR LBRACKET stmt_list.t RBRACKET else {:return new IfStmt(a,t);:};
+ifStmt = IF LPAR expr.a RPAR LBRACKET stmt_list.t RBRACKET else.e {:return new IfStmt(a,t, new Opt(e));:};
 
 param = INT iddecl.id {:return new Param(id);:};
 

@@ -31,7 +31,7 @@ public class ParseTests extends AbstractTestSuite {
 
 	@Test
         public void validSyntaxbigtest() {
-                testValidSyntax("bigtest.lang");
+                testValidSyntax("main.lang");
         }
 
 

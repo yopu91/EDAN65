@@ -12,6 +12,10 @@ aspect PrettyPrint {
 		}
 	}
 
+
+//ARITHMETIC OPERATIONS:
+
+
 	public void Mul.prettyPrint(PrintStream out, String ind) {
 		getLeft().prettyPrint(out, ind);
 		out.print(" * ");
@@ -41,6 +45,10 @@ aspect PrettyPrint {
                 out.print(" - ");
                 getRight().prettyPrint(out, ind);
         }
+
+
+//COMPARATIVE OPERATIONS:
+
 
 	public void Lthn.prettyPrint(PrintStream out, String ind) {
                 getLeft().prettyPrint(out, ind);
@@ -78,11 +86,18 @@ aspect PrettyPrint {
                 getRight().prettyPrint(out, ind);
         }
 
+
+
+//ASSIGNMENT:
+
        public void Assignment.prettyPrint(PrintStream out, String ind) {
                 getIdentifier().prettyPrint(out, ind);
                 out.append(" = ");
                 getExpression().prettyPrint(out, ind+"    ");
         }
+
+
+//STATEMENTS:
 
        public void WhileStmt.prettyPrint(PrintStream out, String ind) {
 
@@ -108,7 +123,7 @@ aspect PrettyPrint {
                         getThen(i).prettyPrint(out, ind+"  ");
                 }
 		
-		if(hasElseStmt()){
+		if(hasElseStmt() && getElseStmt() != null){
 			out.println("else");
 			getElseStmt().prettyPrint(out, ind+"  ");
 		}
@@ -130,9 +145,11 @@ aspect PrettyPrint {
 
 	public void FuncCall.prettyPrint(PrintStream out, String ind) {
 		getName().prettyPrint(out, ind+"  ");
+		out.append("("); //Redundant?
 		for (int i = 0; i<getNumE(); ++i){
 			getE(i).prettyPrint(out, ind+"  ");
 		}
+		out.append(")");
 	}
 	public void FuncStmt.prettyPrint(PrintStream out, String ind) {
 		getFuncCall().prettyPrint(out, ind);
@@ -145,6 +162,31 @@ aspect PrettyPrint {
 		}
 	}
 
+	public void ParamFunc.prettyPrint(PrintStream out, String ind) {
+		getName().prettyPrint(out, ind +"  ");
+		out.append("("); 
+		for(int i = 0; i<getNumParams(); ++i){
+			getParams(i).prettyPrint(out, ind+"  ");
+		}
+		out.println();
+
+		 for(int i = 0; i<getNumStmts(); ++i) {
+                        out.println();
+                        getStmts(i).prettyPrint(out, ind+"  ");
+                }
+
+	}
+
+
+	public void Param.prettyPrint(PrintStream out, String ind) {
+		/*This seems funky. Should probably be "Declare" instead of "getIdDecl" but that goes against Abstract Grammar in jastAdd...?*/
+		getIdDecl().prettyPrint(out, ind);
+	}
+
+
+
+
+//TOKENS:
 
 	public void Numeral.prettyPrint(PrintStream out, String ind) {
 		out.print(getNUMERAL());

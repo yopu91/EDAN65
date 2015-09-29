@@ -1,7 +1,7 @@
 /*FINITO*/
 
 Program ::= ParamFunc*;
-ParamFunc	 	::= IdDecl Param* Stmt*;
+ParamFunc	 	::= Name:IdDecl Params:Param* Stmts:Stmt*;
 Param			::= IdDecl;
 
 abstract Stmt;
@@ -10,12 +10,12 @@ WhileStmt:Stmt		::= Cond:Expr Stmt*;
 IfStmt:Stmt		::= Cond:Expr Then:Stmt* [ElseStmt];
 ElseStmt:Stmt		::= Stmt*; 
 ReturnStmt:Stmt		::= Expr;
-FuncCall:Expr		::= IdUse Expr*;
+FuncCall:Expr		::= Name:IdUse E:Expr*;
 
 FuncStmt:Stmt 		::= FuncCall; 
 
-Assignment:Stmt		::= IdUse Expr;
-Declare:Stmt		::= IdDecl [Expr];
+Assignment:Stmt		::= Identifier:IdUse Expression:Expr;
+Declare:Stmt		::= Identifier:IdDecl [Expr];
 
 
 abstract Expr;

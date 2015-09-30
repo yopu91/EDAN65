@@ -119,7 +119,7 @@ aspect NameAnalysis {
 	}
 
         public void ParamFunc.checkNames(PrintStream err, SymbolTable symbols){
-		getName().checkNames(err,symbols.push());
+		getName().checkNames(err,symbols);
 		for(int i=0; i<getNumParams(); ++i){
 			getParams(i).checkNames(err, symbols);
 		}
@@ -130,7 +130,7 @@ aspect NameAnalysis {
 
 
         public void Param.checkNames(PrintStream err, SymbolTable symbols){
-		getIdDecl().checkNames(err, symbols);
+		getIdDecl().checkNames(err, symbols.push());
 	}
 
 

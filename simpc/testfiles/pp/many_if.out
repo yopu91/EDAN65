@@ -1,12 +1,9 @@
-g(
-
+int 
+g(){
 if (
-a)
-
-a = a
+a){
+a = a;}
 if (
-b)
-
-b = b
-return 
-0
+b){
+b = b;}
+return 0;}

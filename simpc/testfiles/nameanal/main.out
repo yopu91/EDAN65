@@ -1,0 +1,14 @@
+Error at line 11: symbol 'a' is already declared!
+Error at line 11: symbol 'b' is already declared!
+Error at line 15: symbol 'gcd2' has not been declared before this use!
+Error at line 18: symbol 'a' is already declared!
+Error at line 19: symbol 'b' is already declared!
+Error at line 20: symbol 'read' has not been declared before this use!
+Error at line 21: symbol 'read' has not been declared before this use!
+Error at line 22: symbol 'print' has not been declared before this use!
+Error at line 22: symbol 'gcd1' has not been declared before this use!
+Error at line 23: symbol 'print' has not been declared before this use!
+Error at line 23: symbol 'gcd2' has not been declared before this use!
+Error at line 24: symbol 'gcd1' has not been declared before this use!
+Error at line 24: symbol 'gcd2' has not been declared before this use!
+Error at line 25: symbol 'print' has not been declared before this use!

@@ -1,21 +1,4 @@
-Error at line 2: symbol 'a' has not been declared before this use!
-Error at line 2: symbol 'b' has not been declared before this use!
-Error at line 3: symbol 'a' has not been declared before this use!
-Error at line 3: symbol 'b' has not been declared before this use!
-Error at line 4: symbol 'a' has not been declared before this use!
-Error at line 4: symbol 'b' has not been declared before this use!
-Error at line 4: symbol 'a' has not been declared before this use!
-Error at line 6: symbol 'b' has not been declared before this use!
-Error at line 6: symbol 'a' has not been declared before this use!
-Error at line 6: symbol 'b' has not been declared before this use!
-Error at line 9: symbol 'a' has not been declared before this use!
-Error at line 13: symbol 'b' has not been declared before this use!
-Error at line 14: symbol 'a' has not been declared before this use!
-Error at line 17: symbol 'b' has not been declared before this use!
-Error at line 17: symbol 'a' has not been declared before this use!
-Error at line 17: symbol 'b' has not been declared before this use!
-Error at line 23: symbol 'read' has not been declared before this use!
-Error at line 24: symbol 'read' has not been declared before this use!
-Error at line 25: symbol 'print' has not been declared before this use!
-Error at line 26: symbol 'print' has not been declared before this use!
-Error at line 28: symbol 'print' has not been declared before this use!
+Error at line 20: symbol 'a' is already declared!
+Error at line 20: symbol 'b' is already declared!
+Error at line 29: symbol 'a' is already declared!
+Error at line 30: symbol 'b' is already declared!

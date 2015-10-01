@@ -12,7 +12,8 @@ ElseStmt:Stmt		::= Stmt*;
 ReturnStmt:Stmt		::= Expr;
 FuncCall:Expr		::= Name:IdUse E:Expr*;
 
-FuncStmt:Stmt 		::= FuncCall; 
+FuncStmt:Stmt 		::= FuncCall; //This line is needed so that a function (such as gcd(a,b)) can be evaluated to an expression
+
 
 Assignment:Stmt		::= Identifier:IdUse Expression:Expr;
 Declare:Stmt		::= Identifier:IdDecl [Expr];
@@ -25,15 +26,15 @@ IdDecl			::= <ID>; //deklarera
 
 BinaryExpr:Expr		::= Left:Expr Right:Expr;
 
-Add:BinaryExpr;	//	::= Left:DivMult Right:PlusMinus;
-Sub:BinaryExpr;	//  	::= Left:DivMult Right:PlusMinus;
-Div:BinaryExpr;	//  	::= Left:Term Right:DivMult;
-Mul:BinaryExpr;	//  	::= Left:Term Right:DivMult;
-Mod:BinaryExpr;	//  	::= Left:Term Right:DivMult;
+Add:BinaryExpr;
+Sub:BinaryExpr;
+Div:BinaryExpr;
+Mul:BinaryExpr;
+Mod:BinaryExpr;
 
-Neq:BinaryExpr;	// 	::= Left:Term Right:Term;
-Eq:BinaryExpr;	// 	::= Left:Term Right:Term;
-Leq:BinaryExpr;	// 	::= Left:Term Right:Term;
-Lthn:BinaryExpr;// 	::= Left:Term Right:Term;
-Geq:BinaryExpr;	//  	::= Left:Term Right:Term;
-Gthn:BinaryExpr;// 	::= Left:Term Right:Term;
+Neq:BinaryExpr;
+Eq:BinaryExpr;
+Leq:BinaryExpr;
+Lthn:BinaryExpr;
+Geq:BinaryExpr;	
+Gthn:BinaryExpr;

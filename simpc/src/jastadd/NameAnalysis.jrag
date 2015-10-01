@@ -55,12 +55,13 @@ aspect NameAnalysis {
 	 */
 	public void Program.checkNames(PrintStream err) {
 		SymbolTable symbols = new SymbolTable();
-		/*
+		
 		for (int i=0; i<getNumParamFunc(); ++i){
-			getParamFunc(i).checkNames(err, symbols);
+			//Try adding/removing .push()
+			getParamFunc(i).checkNames(err, symbols.push());
 		}
-		*/
-		checkNames(err, symbols);
+		
+		//checkNames(err, symbols.push());
 	}
 
 	/**
@@ -71,7 +72,7 @@ aspect NameAnalysis {
 	public void ASTNode.checkNames(PrintStream err, SymbolTable symbols) {
 		for (int i = 0; i < getNumChild(); ++i) {
 			getChild(i).checkNames(err, symbols);
-			System.out.println(getChild(i).getClass().toString()+ "used generic ASTNode.checkNames function");
+			System.out.println(getChild(i).getClass().toString()+ " used the generic ASTNode.checkNames function call");
 		}
 	}
 
@@ -122,6 +123,7 @@ aspect NameAnalysis {
 		getFuncCall().checkNames(err, symbols);
 	}
 
+
         public void Declare.checkNames(PrintStream err, SymbolTable symbols){
 		getIdentifier().checkNames(err, symbols);
 		if(hasExpr()){
@@ -130,7 +132,9 @@ aspect NameAnalysis {
 	}
 
         public void ParamFunc.checkNames(PrintStream err, SymbolTable symbols){
+
 		getName().checkNames(err,symbols);
+
 		for(int i=0; i<getNumParams(); ++i){
 			getParams(i).checkNames(err, symbols);
 		}
@@ -150,7 +154,6 @@ aspect NameAnalysis {
 			err.format("Error at line %d: symbol \'%s\' is already declared!", getLine(), getID());
 			err.println();
 		}
-		//checkID(err, symbols);
 	}
 
 	public void IdUse.checkNames(PrintStream err, SymbolTable symbols) {
@@ -158,22 +161,8 @@ aspect NameAnalysis {
 			err.format("Error at line %d: symbol \'%s\' has not been declared before this use!", getLine(), getID());
 			err.println();
 		}
-		//checkID(err, symbols);
 	}
 
-/*	public void checkID(PrintStream err, SymbolTable symbols){
-		 if (!symbols.declare(getID())) {
-                        err.format("Error at line %d: symbol \'%s\' is already declared!", getLine(), getID());
-                        err.println();
-                }
- 
-		if (!symbols.lookup(getID())) {
-                        err.format("Error at line %d: symbol \'%s\' has not been declared before this use!", getLine(), getID());
-                        err.println();
-                }
-
-	}
-*/
 	public void BinaryExpr.checkNames(PrintStream err, SymbolTable symbols){
 		getLeft().checkNames(err, symbols);
 		getRight().checkNames(err, symbols);

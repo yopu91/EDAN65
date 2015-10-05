@@ -94,7 +94,7 @@ aspect PrettyPrint {
                 getIdentifier().prettyPrint(out, ind);
                 out.append(" = ");
                 getExpression().prettyPrint(out, ind+"    ");
-		out.append(";");
+		out.println(";");
         }
 
 
@@ -104,55 +104,53 @@ aspect PrettyPrint {
 
 		out.print("while (");
 		getCond().prettyPrint(out, ind);
-		out.append("){");
+		out.println("){");
 		
 		for(int i = 0; i<getNumStmt(); ++i) {
-			out.println();
 			getStmt(i).prettyPrint(out, ind+"  ");
 		}
+		out.println(ind +"}");
 
         }
 
 	public void IfStmt.prettyPrint(PrintStream out, String ind) {
 
-		out.println("if (");
+		out.print(ind + "if (");
                 getCond().prettyPrint(out, ind);
-                out.append("){");		
+                out.println("){");		
 
 		 for(int i = 0; i<getNumThen(); ++i) {
-                        out.println();
                         getThen(i).prettyPrint(out, ind+"  ");
                 }
-		out.append("}");
+		out.println(ind + "}");
 	
 		if(hasElseStmt() && getElseStmt() != null){
 
 			out.println("else {");
 			getElseStmt().prettyPrint(out, ind+"  ");
-			out.println("}");
+			out.println(ind + "}");
 		}
 	}
 
 	public void ElseStmt.prettyPrint(PrintStream out, String ind) {
 		
 		for(int i = 0; i<getNumStmt(); ++i) {
-                        out.println();
                         getStmt(i).prettyPrint(out, ind+"  ");
                 }
 
 	}
 
 	public void ReturnStmt.prettyPrint(PrintStream out, String ind) {
-		out.print("return ");
-		getExpr().prettyPrint(out, ind+"  ");
-		out.append(";");
+		out.print(ind + "return ");
+		getExpr().prettyPrint(out, ind);
+		out.println(";");
 	}
 
 	public void FuncCall.prettyPrint(PrintStream out, String ind) {
-		getName().prettyPrint(out, ind+"  ");
+		getName().prettyPrint(out, ind);
 		out.append("(");
 		for (int i = 0; i<getNumE(); ++i){
-			getE(i).prettyPrint(out, ind+"  ");
+			getE(i).prettyPrint(out, ind);
 			if(i!=getNumE()-1){
 				out.append(",");
 			}
@@ -165,16 +163,17 @@ aspect PrettyPrint {
 	}
 
 	public void Declare.prettyPrint(PrintStream out, String ind) {
-		out.append("int ");
-		getIdentifier().prettyPrint(out, ind+"  ");
+		out.append(ind + "int ");
+		getIdentifier().prettyPrint(out, ind);
 		if(hasExpr()){
-			getExpr().prettyPrint(out, ind+"  ");
+			out.append(" = ");
+			getExpr().prettyPrint(out, ind);
 		}
 		out.append(";");
 	}
 
 	public void ParamFunc.prettyPrint(PrintStream out, String ind) {
-		out.println("int ");
+		out.print(ind + "int ");
 		getName().prettyPrint(out, ind);
 		out.append("("); 
 		for(int i = 0; i<getNumParams(); ++i){
@@ -186,10 +185,10 @@ aspect PrettyPrint {
 		out.print("){");
 
 		 for(int i = 0; i<getNumStmts(); ++i) {
-                        out.println();
+			out.println();
                         getStmts(i).prettyPrint(out, ind+"  ");
                 }
-		out.append("}");
+		out.println("}");
 
 	}
 
@@ -217,54 +216,5 @@ aspect PrettyPrint {
 		out.print(getID());
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//OLD STUFF
-/*
-	public void Let.prettyPrint(PrintStream out, String ind) {
-		out.println("let");
-		for (int i = 0; i < getNumBinding(); ++i) {
-			out.print(ind+"  ");
-			getBinding(i).prettyPrint(out, ind+"  ");
-			out.println();
-		}
-		out.println(ind + "in");
-		out.print(ind+"  ");
-		getExpr().prettyPrint(out, ind+"  ");
-		out.println();
-		out.print(ind + "end");
-	}
-
-	public void Binding.prettyPrint(PrintStream out, String ind) {
-		getIdDecl().prettyPrint(out, ind);
-		out.append(" = ");
-		getExpr().prettyPrint(out, ind+"    ");
-	}
-
-	public void Ask.prettyPrint(PrintStream out, String ind) {
-		out.print("ask user");
-		if (hasDefault()) {
-			out.print(" [");
-			getDefault().prettyPrint(out, ind+"    ");
-			out.print("]");
-		}
-	}
-
-*/
 
 

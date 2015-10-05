@@ -1,12 +1,10 @@
 int g(){
   if (a){
-a = a;
+    a = a;
   }
-
   if (b){
-b = b;
+    b = b;
   }
-
   return 0;
 }
 

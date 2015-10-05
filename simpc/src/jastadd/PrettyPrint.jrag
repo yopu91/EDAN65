@@ -91,9 +91,10 @@ aspect PrettyPrint {
 //ASSIGNMENT:
 
        public void Assignment.prettyPrint(PrintStream out, String ind) {
+		out.print(ind);
                 getIdentifier().prettyPrint(out, ind);
                 out.append(" = ");
-                getExpression().prettyPrint(out, ind+"    ");
+                getExpression().prettyPrint(out, ind+"  ");
 		out.println(";");
         }
 
@@ -102,7 +103,7 @@ aspect PrettyPrint {
 
        public void WhileStmt.prettyPrint(PrintStream out, String ind) {
 
-		out.print("while (");
+		out.print(ind+"while (");
 		getCond().prettyPrint(out, ind);
 		out.println("){");
 		
@@ -126,8 +127,8 @@ aspect PrettyPrint {
 	
 		if(hasElseStmt() && getElseStmt() != null){
 
-			out.println("else {");
-			getElseStmt().prettyPrint(out, ind+"  ");
+			out.println(ind + "else {");
+			getElseStmt().prettyPrint(out, ind);
 			out.println(ind + "}");
 		}
 	}
@@ -147,19 +148,20 @@ aspect PrettyPrint {
 	}
 
 	public void FuncCall.prettyPrint(PrintStream out, String ind) {
-		getName().prettyPrint(out, ind);
+		getName().prettyPrint(out, ind+"  ");
 		out.append("(");
 		for (int i = 0; i<getNumE(); ++i){
 			getE(i).prettyPrint(out, ind);
 			if(i!=getNumE()-1){
-				out.append(",");
+				out.append(", ");
 			}
 		}
 		out.append(")");
 	}
 	public void FuncStmt.prettyPrint(PrintStream out, String ind) {
+		out.append(ind);
 		getFuncCall().prettyPrint(out, ind);
-		out.append(";");
+		out.println(";");
 	}
 
 	public void Declare.prettyPrint(PrintStream out, String ind) {
@@ -169,7 +171,7 @@ aspect PrettyPrint {
 			out.append(" = ");
 			getExpr().prettyPrint(out, ind);
 		}
-		out.append(";");
+		out.println(";");
 	}
 
 	public void ParamFunc.prettyPrint(PrintStream out, String ind) {
@@ -179,13 +181,12 @@ aspect PrettyPrint {
 		for(int i = 0; i<getNumParams(); ++i){
 			getParams(i).prettyPrint(out, ind+"  ");
 			if(i!=getNumParams()-1) {
-				out.append(",");
+				out.append(", ");
 			}
 		}
-		out.print("){");
+		out.println("){");
 
 		 for(int i = 0; i<getNumStmts(); ++i) {
-			out.println();
                         getStmts(i).prettyPrint(out, ind+"  ");
                 }
 		out.println("}");

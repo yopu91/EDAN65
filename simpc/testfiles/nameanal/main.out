@@ -1,9 +1,0 @@
-Error at line 31: symbol 'read' has not been declared before this use!
-Error at line 32: symbol 'read' has not been declared before this use!
-Error at line 33: symbol 'print' has not been declared before this use!
-Error at line 33: symbol 'gcd1' has not been declared before this use!
-Error at line 34: symbol 'print' has not been declared before this use!
-Error at line 34: symbol 'gcd2' has not been declared before this use!
-Error at line 35: symbol 'gcd1' has not been declared before this use!
-Error at line 35: symbol 'gcd2' has not been declared before this use!
-Error at line 36: symbol 'print' has not been declared before this use!

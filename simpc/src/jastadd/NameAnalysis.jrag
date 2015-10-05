@@ -55,13 +55,10 @@ aspect NameAnalysis {
 	 */
 	public void Program.checkNames(PrintStream err) {
 		SymbolTable symbols = new SymbolTable();
-		
 		for (int i=0; i<getNumParamFunc(); ++i){
 			//Try adding/removing .push()
-			getParamFunc(i).checkNames(err, symbols.push());
+			getParamFunc(i).checkNames(err, symbols);
 		}
-		
-		//checkNames(err, symbols.push());
 	}
 
 	/**
@@ -81,12 +78,13 @@ aspect NameAnalysis {
 			 * Push a new table on the stack.
 			 * @return the new top of the stack
 			*/
-		getExpression().checkNames(err, symbols.push());
+		getExpression().checkNames(err, symbols);
 		getIdentifier().checkNames(err, symbols);
 	}
 
 	public void WhileStmt.checkNames(PrintStream err, SymbolTable symbols){
 		getCond().checkNames(err, symbols);
+		symbols.push();
 		for(int i = 0; i < getNumStmt(); ++i){
 			getStmt(i).checkNames(err, symbols);
 		}
@@ -94,11 +92,13 @@ aspect NameAnalysis {
 
 	public void IfStmt.checkNames(PrintStream err, SymbolTable symbols){
 		getCond().checkNames(err, symbols);
+		SymbolTable ThenSymbols = symbols.push();
+
                 for(int i = 0; i < getNumThen(); ++i){
-                        getThen(i).checkNames(err, symbols);
+                        getThen(i).checkNames(err, ThenSymbols);
                 }
 		if(hasElseStmt() && getElseStmt() != null){
-			getElseStmt().checkNames(err, symbols);
+			getElseStmt().checkNames(err, symbols.push());
 		}
 	}
 
@@ -134,6 +134,7 @@ aspect NameAnalysis {
         public void ParamFunc.checkNames(PrintStream err, SymbolTable symbols){
 
 		getName().checkNames(err,symbols);
+		symbols = symbols.push(); //Nyskapat scope vilekt goer att referencing kan goras
 
 		for(int i=0; i<getNumParams(); ++i){
 			getParams(i).checkNames(err, symbols);

@@ -1,0 +1,42 @@
+/*FINITO*/
+
+Program ::= ParamFunc*;
+ParamFunc	 	::= Name:IdDecl Params:Param* Stmts:Stmt*;
+Param			::= IdDecl;
+
+abstract Stmt;
+
+WhileStmt:Stmt		::= Cond:Expr Stmt*;
+IfStmt:Stmt		::= Cond:Expr Then:Stmt* [ElseStmt];
+ElseStmt:Stmt		::= Stmt*; 
+ReturnStmt:Stmt		::= Expr;
+FuncCall:Expr		::= Name:IdUse E:Expr*;
+
+FuncStmt:Stmt 		::= FuncCall; //This line is needed so that a function (such as gcd(a,b)) can be evaluated to an expression
+
+
+Assignment:Stmt		::= Identifier:IdUse Expression:Expr;
+Declare:Stmt		::= Identifier:IdDecl [Expr];
+
+/****************************************************PILLEPILL*/
+UnknownDecl : IdDecl;
+/***************************************************************/
+abstract Expr;
+Numeral:Expr		::= <NUMERAL>;
+IdUse:Expr		::= <ID>; //använd
+IdDecl			::= <ID>; //deklarera
+
+BinaryExpr:Expr		::= Left:Expr Right:Expr;
+
+Add:BinaryExpr;
+Sub:BinaryExpr;
+Div:BinaryExpr;
+Mul:BinaryExpr;
+Mod:BinaryExpr;
+
+Neq:BinaryExpr;
+Eq:BinaryExpr;
+Leq:BinaryExpr;
+Lthn:BinaryExpr;
+Geq:BinaryExpr;	
+Gthn:BinaryExpr;

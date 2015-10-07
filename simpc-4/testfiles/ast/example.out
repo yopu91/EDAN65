@@ -1,0 +1,11 @@
+Program
+  List
+    ParamFunc
+      IdDecl
+      List
+      List
+        Assignment
+          IdUse
+          IdUse
+        ReturnStmt
+          IdUse

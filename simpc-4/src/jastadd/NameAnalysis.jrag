@@ -1,0 +1,47 @@
+aspect NameAnalysis {
+	syn IdDecl IdUse.decl() = lookup(getID());
+	inh IdDecl IdUse.lookup(String name);
+//	inh IdDecl Stmt.lookup(String name); //OK for some reaseon
+	
+
+	eq Assignment.getExpression().lookup(String name) {
+		IdDecl decl = lookup(name);
+		return !decl.isUnknown() ? decl : lookup(name);
+	}
+	
+	eq WhileStmt.getCond().lookup(String name) {
+		IdDecl decl = lookup(name);
+		return !decl.isUnknown() ? decl : lookup(name);
+	}
+
+        eq IfStmt.getCond().lookup(String name) {
+                IdDecl decl = lookup(name);
+                return !decl.isUnknown() ? decl : lookup(name);
+        }
+
+	eq Declare.
+
+/*
+	eq Stmt.lookup(String name){
+		for (int i=0; i<getNumStmt(); i++){
+			if(getStmt(i).lookup(name)){
+				
+			}
+		}
+	}
+*/
+	eq Program.getChild().lookup(String name) = unknownDecl();
+	inh IdDecl IdDecl.lookup(String name);
+	syn boolean IdDecl.isMultiplyDeclared() = lookup(getID()) != this;
+}
+
+aspect CircularDefinitions {
+	/* Identify circular definitions in let expressions */
+	syn boolean IdUse.isCircular() = inExprOf(decl());
+	inh boolean IdUse.inExprOf(IdDecl decl);
+/*
+	inh boolean Assignment.inExprOf(IdUse use);
+	eq Assignment.getExpression().inExprOf(IdUse use) = getIdentifier() == use || inExprOf(use);
+*/
+	eq Program.getChild().inExprOf(IdDecl decl) = false;
+}

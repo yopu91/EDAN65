@@ -1,8 +1,8 @@
 aspect NameAnalysis {
 	syn IdDecl IdUse.decl() = lookup(getID());
 	inh IdDecl IdUse.lookup(String name);
-//	inh IdDecl Stmt.lookup(String name); //OK for some reaseon
-	
+	inh IdDecl Stmt.lookup(String name); //This is needed so that the lookup-function can be called in all classes extending "Stmt"
+//	inh IdDecl Stmt.getStmt(int index).lookup(String name);
 
 	eq Assignment.getExpression().lookup(String name) {
 		IdDecl decl = lookup(name);
@@ -18,8 +18,23 @@ aspect NameAnalysis {
                 IdDecl decl = lookup(name);
                 return !decl.isUnknown() ? decl : lookup(name);
         }
+	
+	eq ElseStmt.getStmt(int index).lookup(String name) {
+		//what the fuck is going on here
+		for (int i = 0; i<getNumStmt(); i++){
+			if( getStmt(i).lookup(name).equals(name)){
+				//WHAT?
+				return getStmt(i).lookup(name);
+			}
+		}
+		return unknownDecl();
+	}
+/*************LIKE THIS FOR ALL STMTS???
+	eq IfStmt.getStmt(int index).lookup(String name) {
 
-	eq Declare.
+	}
+*/
+	
 
 /*
 	eq Stmt.lookup(String name){

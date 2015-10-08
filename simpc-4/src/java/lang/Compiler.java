@@ -42,6 +42,18 @@ public class Compiler {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+
+		//ERROR
+/*
+		if (!program.errors().isEmpty()) {
+                                System.err.println();
+                                System.err.println("Errors: ");
+                                for (ErrorMessage e: program.errors()) {
+                                        System.err.println("- " + e);
+                                }
+                }
+*/		
 	}
 
 	private static void printUsage() {

@@ -2,7 +2,20 @@ aspect NameAnalysis {
 	syn IdDecl IdUse.decl() = lookup(getID());
 	inh IdDecl IdUse.lookup(String name);
 	inh IdDecl Stmt.lookup(String name); //This is needed so that the lookup-function can be called in all classes extending "Stmt"
-//	inh IdDecl Stmt.getStmt(int index).lookup(String name);
+//	inh IdDecl ParamFunc(int index).lookup(String name);
+	inh IdDecl ParamFunc.lookup(String name);
+	
+
+	syn IdDecl Program.lookup(String name);
+
+	eq Program.lookup(String name){
+		System.out.println("In program lookup : "+name);
+		for (ParamFunc p : getParamFuncList()){
+			IdDecl decl = p.lookup(name);
+			if (decl != unknownDecl()) return decl;
+		}
+		return unknownDecl();
+	}
 
 	eq Assignment.getExpression().lookup(String name) {
 		IdDecl decl = lookup(name);
@@ -29,24 +42,41 @@ aspect NameAnalysis {
 		}
 		return unknownDecl();
 	}
-/*************LIKE THIS FOR ALL STMTS???
-	eq IfStmt.getStmt(int index).lookup(String name) {
 
-	}
-*/
+	
 	
 
-/*
-	eq Stmt.lookup(String name){
-		for (int i=0; i<getNumStmt(); i++){
-			if(getStmt(i).lookup(name)){
-				
+//	eq Program.getChild().lookup(String name) = unknownDecl();
+	
+
+	eq Program.getParamFunc(int index).lookup(String name) {
+		for (int i=0; i<index; i++){
+			System.out.println("In ParamFunc"+name);
+			IdDecl decl = getParamFunc(i).localLookup(name);
+			if (decl != unknownDecl()){
+				return decl;
 			}
 		}
+		return unknownDecl();
 	}
-*/
-	eq Program.getChild().lookup(String name) = unknownDecl();
+
+	syn IdDecl ParamFunc.localLookup(String name);
+
+	eq ParamFunc.localLookup(String name) {
+		//gå igenom Name;
+		if(getName().equals(lookup(name))){
+			 return getName().lookup(name);
+		}
+		else {
+			return unknownDecl();
+		}
+		//gå igenom param;
+		//gå igenom stmts i FUNC;
+	}
+
 	inh IdDecl IdDecl.lookup(String name);
+
+	//??????????????????????????????????
 	syn boolean IdDecl.isMultiplyDeclared() = lookup(getID()) != this;
 }
 

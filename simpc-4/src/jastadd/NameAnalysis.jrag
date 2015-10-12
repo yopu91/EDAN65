@@ -1,4 +1,17 @@
+/***************************************
+Attribute grammars:
+-- Expressing properties of methods/expressions/variables as ATTRIBUTES of AST nodes.
+-- Define those ATTRIBUTES by EQUATIONS
+
+- If the equation defines an attribute in the NODE - the attribute is synthesized
+- If the equation defines an attribute in the CHILD - the attribute is inherited
+
+***************************************/
+
+
+
 aspect NameAnalysis {
+
 	syn IdDecl IdUse.decl() = lookup(getID());
 	inh IdDecl IdUse.lookup(String name);
 
@@ -6,8 +19,11 @@ aspect NameAnalysis {
 	
 	inh IdDecl IdDecl.lookup(String name);
 
-	inh IdDecl Stmt.lookup(String name);
-	
+	inh IdDecl Stmt.lookup(String name);	
+        //Generic localLookup for all classes implementing "Stmt".
+        syn IdDecl Stmt.localLookup(String name);
+
+
 	eq Program.getChild().lookup(String name) { 
 		System.out.println("\nIn Program.getChild().lookup("+name+")\n");
 		return unknownDecl(); 
@@ -15,6 +31,7 @@ aspect NameAnalysis {
 
 	eq ParamFunc.getStmts(int index).lookup(String name){
 		System.out.println("In ParamFunc.getStmts("+index+").lookup("+name+")");
+
 		IdDecl decl = localLookup(name); //ParamFunc.localLookup
 		return !decl.isUnknown() ? decl : lookup(name);
 	}
@@ -25,6 +42,16 @@ aspect NameAnalysis {
 			return getIdentifier();
 		}
 		return unknownDecl();
+	}
+	
+	eq Declare.getIdentifier().lookup(String name){
+		IdDecl decl = localLookup(name);
+		return !decl.isUnknown() ? decl : lookup(name);
+	}
+	
+	eq Declare.getExpr().lookup(String name){
+		IdDecl decl = localLookup(name);
+		return !decl.isUnknown() ? decl : lookup(name);
 	}
 
         syn IdDecl Assignment.localLookup(String name){
@@ -57,9 +84,6 @@ aspect NameAnalysis {
                 return null;
         }
 
-
-	//Generic localLookup for all classes implementing "Stmt". 
-	syn IdDecl Stmt.localLookup(String name);
 
 /* Interesting methods in ParamFunc:
 	getName() -> IdDecl
@@ -97,7 +121,8 @@ aspect NameAnalysis {
 		//problematic with "getStmts(j).lookup(name);" since it looks for the method in the abstract class Stmt
 
 		for (int j=0; j<getNumStmts(); j++){
-			IdDecl decl = getStmts(j).localLookup(name);
+			System.out.println("Should be entering lookup for: "+getStmts(j).getClass().getName());
+			IdDecl decl = getStmts(j).lookup(name);
 			System.out.println("	Returning: "+decl.getID());
 			return !decl.isUnknown() ? decl : lookup(name);
 		}

@@ -1,10 +1,9 @@
-int aaa(int bbb){
-	int ccc = bbb + 1;
-	if(bbb/2 > 1){
-		return bbb + ccc;
-	}
-	else{
-		return bbb - ccc;
-	}
-	return 0;
+int main2(int a){
+	int b = 0;
+	return b;
+}
+
+int one(){
+	int b = 1;
+	return b;
 }

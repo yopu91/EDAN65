@@ -1,0 +1,10 @@
+int aaa(int bbb){
+	int ccc = bbb + 1;
+	if(bbb/2 > 1){
+		return bbb + ccc;
+	}
+	else{
+		return bbb - ccc;
+	}
+	return 0;
+}

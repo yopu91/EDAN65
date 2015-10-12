@@ -2,160 +2,120 @@ aspect NameAnalysis {
 	syn IdDecl IdUse.decl() = lookup(getID());
 	inh IdDecl IdUse.lookup(String name);
 
-	inh IdDecl Stmt.lookup(String name); //This is needed so that the lookup-function can be called in all classes extending "Stmt"
-//	syn IdDecl ParamFunc.lookup(String name);
-        inh IdDecl ParamFunc.lookup(String name);
-
-	syn IdDecl Program.lookup(String name);
-	syn IdDecl Declare.localLookup(String name);
+	inh IdDecl ParamFunc.lookup(String name); 
 	
-	syn IdDecl Assignment.localLookup(String name);
+	inh IdDecl IdDecl.lookup(String name);
 
-	inh IdDecl Expr.lookup(String name);
-
-	syn IdDecl FuncCall.localLookup(String name);
-	syn IdDecl Numeral.localLookup(String name);
-	syn IdDecl BinaryExpr.localLookup(String name);
-
-
-	eq FuncCall.localLookup(String name) {
-		System.out.println("In 'FuncCall', looking up: "+name);
-		return null;
-	}
-
-	eq Numeral.localLookup(String name) {
-		System.out.println("In 'Numeral', looking up: "+name);
-		return null;
-	}
-
+	inh IdDecl Stmt.lookup(String name);
 	
-	eq BinaryExpr.localLookup(String name) { 
-		System.out.println("In 'BinaryExpr', looking up: "+name);
-		return null;	
+	eq Program.getChild().lookup(String name) { 
+		System.out.println("\nIn Program.getChild().lookup("+name+")\n");
+		return unknownDecl(); 
 	}
 
-	eq Program.lookup(String name){
-		System.out.println("In program lookup : "+ name);
-		for(int i=0; i<getNumParamFunc(); i++){
-			if (name.equals(getParamFunc(i).getName().getID())){
-				return getParamFunc(i).getName();
-			}	
-		}
-                System.out.println("Returning unknownDecl() in 'Program' when locally looking up: "+name);
-
-		return unknownDecl();
-	}
-
-	eq Declare.localLookup(String name){
-		System.out.println("In 'Declare', looking up: "+name);
-		if(getIdentifier().getID().equals(name)){
-			return getIdentifier();
-		}
-		System.out.println("Returning unknownDecl() in 'Declare' when locally looking up: "+name);
-		return unknownDecl();
-	}
-
-	eq Assignment.localLookup(String name){
-		System.out.println("In 'Assignment' looking up: "+ name);
-		if(getExpression().lookup(name) != null){
-			System.out.println("Expr != null");
-			return null;			
-		}
-		else if(getIdentifier().lookup(name) != null){
-			System.out.println("Id != null");
-			return null;
-		}
-		return null;
-	}
-
-
-	eq WhileStmt.getCond().lookup(String name) {
-		IdDecl decl = lookup(name);
+	eq ParamFunc.getStmts(int index).lookup(String name){
+		System.out.println("In ParamFunc.getStmts("+index+").lookup("+name+")");
+		IdDecl decl = localLookup(name); //ParamFunc.localLookup
 		return !decl.isUnknown() ? decl : lookup(name);
 	}
 
-        eq IfStmt.getCond().lookup(String name) {
-                IdDecl decl = lookup(name);
-                return !decl.isUnknown() ? decl : lookup(name);
+	syn IdDecl Declare.localLookup(String name){
+		System.out.println("In Declare.localLookup("+name+")");
+		if(getIdentifier().getID().equals(name)){
+			return getIdentifier();
+		}
+		return unknownDecl();
+	}
+
+        syn IdDecl Assignment.localLookup(String name){
+                System.out.println("In Assignment.localLookup("+name+")");
+                return null;
         }
-	
-	eq ElseStmt.getStmt(int index).lookup(String name) {
-		return unknownDecl();
-	}
 
-	
-	eq Program.getChild().lookup(String name) = unknownDecl();
+        syn IdDecl WhileStmt.localLookup(String name){
+                System.out.println("In WhileStmt.localLookup("+name+")");
+                return null;
+        }
 
-	eq ParamFunc.getName().lookup(String name) {
-			
-		System.out.println("In ParamFunc.getName() looking up "+name);
+        syn IdDecl IfStmt.localLookup(String name){
+                System.out.println("In IfStmt.localLookup("+name+")");
+                return null;
+        }
 
-		IdDecl decl = lookup(name);
-		
-		if (decl != unknownDecl()){
-			return decl;
-		}
-                System.out.println("Returning unknownDecl() in 'ParamFunc.getName()' when looking up: "+name);
+        syn IdDecl ElseStmt.localLookup(String name){
+                System.out.println("In ElseStmt.localLookup("+name+")");
+                return null;
+        }
 
-		return unknownDecl();
-	}
+        syn IdDecl ReturnStmt.localLookup(String name){
+                System.out.println("In ReturnStmt.localLookup("+name+")");
+                return null;
+        }
 
-	eq ParamFunc.getParams(int index).lookup(String name){
-		System.out.println("In ParamFunc.getParams("+index+") looking up: "+name);
-		return null;
-	}
-
-	
-	eq ParamFunc.getStmts(int index).lookup(String name){
-		System.out.println("In ParamFunc.getStmts("+index+") looking up "+name);
-
-		IdDecl decl = lookup(name);
-		
-		//IdDecl decl = localLookup(name); --> How to solve/find different stmts()
-
-		if (decl != unknownDecl()){
-			return decl;
-		}
-
-                System.out.println("Returning unknownDecl() in 'ParamFunc.getStmts("+index+"') when looking up: "+name);
-
-		return unknownDecl();
-	}
+        syn IdDecl FuncStmt.localLookup(String name){
+                System.out.println("In FuncStmt.localLookup("+name+")");
+                return null;
+        }
 
 
-//	syn IdDecl ParamFunc.localLookup(String name);
+	//Generic localLookup for all classes implementing "Stmt". 
+	syn IdDecl Stmt.localLookup(String name);
 
-/*
-	eq ParamFunc.localLookup(String name) {
-		//gå igenom Name;
-
-		System.out.println("in pramFuncLOCAL "+ name);
-		if(getName().getID().equals(name)){
-			System.out.println("getID : " + getName().getID());
-			 return getName();
-		}
-		else {
-			return unknownDecl();
-		}
-
-		//gå igenom param;
-		//gå igenom stmts i FUNC;
-	}
+/* Interesting methods in ParamFunc:
+	getName() -> IdDecl
+	getNumParams() -> int
+	getParams(int index) -> Param
+	hasParams() -> bool
+	hasStmts() -> bool
+	getNumStmts() -> int
+	getStmts(int index) -> Stmt
 */
 
-	inh IdDecl IdDecl.lookup(String name);
+	syn IdDecl ParamFunc.localLookup(String name){
 
+		System.out.println("In ParamFunc.localLookup("+name+")");
+
+
+		//CHECK NAME OF paRAMFUNC
+
+		if(getName().getID().equals(name)){
+			System.out.println("	Returning:"+getName().getID());
+			return getName();
+		}
+
+
+		//CHECK ALL PARAMS of PARAMFUNC
+
+		for (int i =0; i<getNumParams(); i++){
+			if(getParams(i).getIdDecl().getID().equals(name)){
+				System.out.println("	Returning: "+ getParams(i).getIdDecl().getID());
+				return getParams(i).getIdDecl();
+			}
+		}
+
+		//For each Stmt in the paramfunc --> call that particular statements locallookup
+		//problematic with "getStmts(j).lookup(name);" since it looks for the method in the abstract class Stmt
+
+		for (int j=0; j<getNumStmts(); j++){
+			IdDecl decl = getStmts(j).localLookup(name);
+			System.out.println("	Returning: "+decl.getID());
+			return !decl.isUnknown() ? decl : lookup(name);
+		}
+		System.out.println("	Returning: unknownDecl()");
+		return unknownDecl();
+	}
 
 	syn boolean IdDecl.isMultiplyDeclared() {
 
-		if(lookup(getID()) == unknownDecl()){
+		if(lookup(getID()).isUnknown()){
+			System.out.println("	isMultiplyDeclared() returned FALSE when looking up "+getID()+" (getID -> isUnknown())");
 			return false;
 		}
-/*
 		if(lookup(getID()) == this){
+			System.out.println("	isMultiplyDeclared() returned FALSE when looking up "+getID()+" (getID -> this)");
 			return false;
 		}
-*/
+                System.out.println("		isMultiplyDeclared() returned TRUE when looking up "+getID()+" (neither unknown or this)");
 		return true;
 	}
 }
@@ -164,7 +124,6 @@ aspect CircularDefinitions {
 	/* Identify circular definitions in let expressions */
 	syn boolean IdUse.isCircular() = inExprOf(decl());
 	inh boolean IdUse.inExprOf(IdDecl decl);
-	inh boolean Assignment.inExprOf(IdUse use);
-	eq Assignment.getExpression().inExprOf(IdUse use) = getIdentifier() == use || inExprOf(use);
 	eq Program.getChild().inExprOf(IdDecl decl) = false;
 }
+

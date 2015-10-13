@@ -24,9 +24,14 @@ aspect NameAnalysis {
         syn IdDecl Stmt.localLookup(String name);
 
 
-	eq Program.getChild().lookup(String name) { 
-		System.out.println("\nIn Program.getChild().lookup("+name+")\n");
-		return unknownDecl(); 
+	eq Program.getParamFunc(int index).lookup(String name) { 
+		System.out.println("\nIn Program.getParamFunc("+index+").lookup("+name+")\n");
+		return getParamFunc(index).localLookup(name);
+
+	}
+
+	eq Program.getChild().lookup(String name){
+		return unknownDecl();
 	}
 
 	eq ParamFunc.getStmts(int index).lookup(String name){

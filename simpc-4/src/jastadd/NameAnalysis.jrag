@@ -26,20 +26,28 @@ aspect NameAnalysis {
 
 	eq Program.getParamFunc(int index).lookup(String name) { 
 		System.out.println("\nIn Program.getParamFunc("+index+").lookup("+name+")\n");
-		return getParamFunc(index).localLookup(name);
 
+		//Using any of these two return statements results in circularity
+		return getParamFunc(index).localLookup(name);
+		//return getParamFunc(index).lookup(name);
 	}
 
+/* This method is only invoked when one of the children are unknownDecl() otherwise it goes to Program.getParamFunc(...-method.
+If this is removed or commented away then the compiler throws a WARNING, but that's about it */
 	eq Program.getChild().lookup(String name){
+		System.out.println("\nIn Program.getChild().lookup("+name+")\n");
 		return unknownDecl();
 	}
 
+
 	eq ParamFunc.getStmts(int index).lookup(String name){
+
 		System.out.println("In ParamFunc.getStmts("+index+").lookup("+name+")");
 
 		IdDecl decl = localLookup(name); //ParamFunc.localLookup
 		return !decl.isUnknown() ? decl : lookup(name);
 	}
+
 
 	syn IdDecl Declare.localLookup(String name){
 		System.out.println("In Declare.localLookup("+name+")");
@@ -58,6 +66,9 @@ aspect NameAnalysis {
 		IdDecl decl = localLookup(name);
 		return !decl.isUnknown() ? decl : lookup(name);
 	}
+
+
+
 
         syn IdDecl Assignment.localLookup(String name){
                 System.out.println("In Assignment.localLookup("+name+")");
@@ -90,6 +101,10 @@ aspect NameAnalysis {
         }
 
 
+
+
+
+
 /* Interesting methods in ParamFunc:
 	getName() -> IdDecl
 	getNumParams() -> int
@@ -103,12 +118,10 @@ aspect NameAnalysis {
 	syn IdDecl ParamFunc.localLookup(String name){
 
 		System.out.println("In ParamFunc.localLookup("+name+")");
-
-
 		//CHECK NAME OF paRAMFUNC
 
 		if(getName().getID().equals(name)){
-			System.out.println("	Returning:"+getName().getID());
+			System.out.println("	Returning:"+getName().getID()+" (when checking name of ParamFunc)");
 			return getName();
 		}
 
@@ -117,17 +130,17 @@ aspect NameAnalysis {
 
 		for (int i =0; i<getNumParams(); i++){
 			if(getParams(i).getIdDecl().getID().equals(name)){
-				System.out.println("	Returning: "+ getParams(i).getIdDecl().getID());
+				System.out.println("	Returning: "+ getParams(i).getIdDecl().getID()+" (when checking Params of ParamFunc)");
 				return getParams(i).getIdDecl();
 			}
 		}
 
 		//For each Stmt in the paramfunc --> call that particular statements locallookup
-		//problematic with "getStmts(j).lookup(name);" since it looks for the method in the abstract class Stmt
+		//problematic with "getStmts(j).lookup(name);" since it looks for the method in the abstract class Stmt --> solved by inh-equation above
 
 		for (int j=0; j<getNumStmts(); j++){
 			System.out.println("Should be entering lookup for: "+getStmts(j).getClass().getName());
-			IdDecl decl = getStmts(j).lookup(name);
+			IdDecl decl = getStmts(j).localLookup(name);
 			System.out.println("	Returning: "+decl.getID());
 			return !decl.isUnknown() ? decl : lookup(name);
 		}
@@ -151,9 +164,14 @@ aspect NameAnalysis {
 }
 
 aspect CircularDefinitions {
-	/* Identify circular definitions in let expressions */
-	syn boolean IdUse.isCircular() = inExprOf(decl());
+	syn boolean IdUse.isCircular() { 
+		return inExprOf(decl());
+	}
 	inh boolean IdUse.inExprOf(IdDecl decl);
-	eq Program.getChild().inExprOf(IdDecl decl) = false;
+	eq Program.getChild().inExprOf(IdDecl decl) {
+		System.out.println("	Returning false for Program.getChild().inExprOf( "+ decl.getID());		
+		return false;
+	}	
+		
 }
 

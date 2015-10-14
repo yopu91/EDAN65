@@ -1,9 +1,0 @@
-int main2(int a){
-	int b = 0;
-	return b;
-}
-
-int one(){
-	int b = 1;
-	return b;
-}

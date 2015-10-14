@@ -4,7 +4,9 @@ Attribute grammars:
 -- Define those ATTRIBUTES by EQUATIONS
 
 - If the equation defines an attribute in the NODE - the attribute is synthesized
+-- Synthesized attributes propagate information upwards in the AST
 - If the equation defines an attribute in the CHILD - the attribute is inherited
+-- Inherited attributes propagate information downwards in the AST
 
 ***************************************/
 
@@ -14,41 +16,50 @@ aspect NameAnalysis {
 
 	syn IdDecl IdUse.decl() = lookup(getID());
 	inh IdDecl IdUse.lookup(String name);
-
+//	syn IdDecl IdUse.localLookup(String name);
 	inh IdDecl ParamFunc.lookup(String name); 
 	
 	inh IdDecl IdDecl.lookup(String name);
 
+
+
+
+//Generic methods for abstract classes
+//Stmt
+
 	inh IdDecl Stmt.lookup(String name);	
-        //Generic localLookup for all classes implementing "Stmt".
         syn IdDecl Stmt.localLookup(String name);
+
+//Expr
+	inh IdDecl Expr.lookup(String name);
+//	syn IdDecl Expr.localLookup(String name); //Forces equations for IdUse, NumeralAdd, etc
 
 
 	eq Program.getParamFunc(int index).lookup(String name) { 
 		System.out.println("\nIn Program.getParamFunc("+index+").lookup("+name+")\n");
-
-		//Using any of these two return statements results in circularity
 		return getParamFunc(index).localLookup(name);
-		//return getParamFunc(index).lookup(name);
 	}
 
 /* This method is only invoked when one of the children are unknownDecl() otherwise it goes to Program.getParamFunc(...-method.
 If this is removed or commented away then the compiler throws a WARNING, but that's about it */
+
 	eq Program.getChild().lookup(String name){
 		System.out.println("\nIn Program.getChild().lookup("+name+")\n");
 		return unknownDecl();
 	}
 
-
 	eq ParamFunc.getStmts(int index).lookup(String name){
 
 		System.out.println("In ParamFunc.getStmts("+index+").lookup("+name+")");
 
-		IdDecl decl = localLookup(name); //ParamFunc.localLookup
+		IdDecl decl = localLookup(name); //Goes to ParamFunc.localLookup but I want it to go directly to stmt.localLookup
 		return !decl.isUnknown() ? decl : lookup(name);
 	}
 
 
+
+
+//Declare
 	syn IdDecl Declare.localLookup(String name){
 		System.out.println("In Declare.localLookup("+name+")");
 		if(getIdentifier().getID().equals(name)){
@@ -58,27 +69,107 @@ If this is removed or commented away then the compiler throws a WARNING, but tha
 	}
 	
 	eq Declare.getIdentifier().lookup(String name){
+		System.out.println("In Declare.getIdentifier().lookup("+name+")");
 		IdDecl decl = localLookup(name);
 		return !decl.isUnknown() ? decl : lookup(name);
 	}
 	
 	eq Declare.getExpr().lookup(String name){
+		System.out.println("In Declare.getExpr().lookup("+name+")");
 		IdDecl decl = localLookup(name);
 		return !decl.isUnknown() ? decl : lookup(name);
 	}
 
-
-
+/*
+Assignment:Stmt ::= Identifier:IdUse Expression:Expr;
+*/
 
         syn IdDecl Assignment.localLookup(String name){
                 System.out.println("In Assignment.localLookup("+name+")");
-                return null;
+                if(getIdentifier().getID().equals(name)){
+//                      return lookup(getIdentifier().getID()); 
+			return unknownDecl();
+                }
+
+		if(getExpression().lookup(name).equals(name)){
+			return getExpression().lookup(name);
+		}
+		///////////////INSERT FUNCTION FOR EXPRESSION
+                return unknownDecl();
+
         }
 
-        syn IdDecl WhileStmt.localLookup(String name){
-                System.out.println("In WhileStmt.localLookup("+name+")");
-                return null;
+	eq Assignment.getIdentifier().lookup(String name){
+		System.out.println("In Assignment.getIdentifier().lookup("+name+")");
+                IdDecl decl = localLookup(name);
+                return !decl.isUnknown() ? decl : lookup(name);
+	}
+
+       eq Assignment.getExpression().lookup(String name){
+                System.out.println("In Assignment.getExpression().lookup("+name+")");
+                IdDecl decl = localLookup(name);
+                return !decl.isUnknown() ? decl : lookup(name);
         }
+
+
+
+/*
+WhileStmt:Stmt ::= Cond:Expr Stmt*;
+*/
+
+        syn IdDecl WhileStmt.localLookup(String name){
+
+                System.out.println("In WhileStmt.localLookup("+name+")");
+
+		BinaryExpr cond = (BinaryExpr) getCond();
+
+		IdUse left = (IdUse) cond.getLeft();
+		IdUse right = (IdUse) cond.getRight();
+
+		System.out.println("	Type of Expr left --> "+left.getClass().getName()+"		Type of Expr right --> "+right.getClass().getName());
+
+
+		if(left.getID().equals(name)){
+			return left.lookup(name);
+		}
+		if(right.getID().equals(name)){
+			return right.lookup(name);
+		}
+		
+		return unknownDecl();
+
+/**********************************************************************************************************
+		BinaryExpr cond = (BinaryExpr) getCond();
+		Expr left = cond.getLeft();		
+		Expr right =  cond.getRight();
+
+		//Unsure if localLookup or lookup?
+		IdDecl idLeft = left.localLookup(name);
+		IdDecl idRight = right.localLookup(name);
+
+		if(idLeft.getID().equals(name)){
+			return idLeft;
+		}
+
+		if(idRight.getID().equals(name)){
+			return idRight;
+		}
+		
+		return unknownDecl(); 
+*************************************************************************************************/
+        }
+	
+	eq WhileStmt.getCond().lookup(String name){
+		System.out.println("In WhileStmt.getCond().lookup("+name+")");
+		IdDecl decl = localLookup(name);
+		return !decl.isUnknown() ? decl : lookup(name);
+	}
+
+	eq WhileStmt.getStmt(int index).lookup(String name){
+		System.out.println("In WhileStmt.getStmts().lookup("+name+")");
+		IdDecl decl = localLookup(name);
+                return !decl.isUnknown() ? decl : lookup(name);
+	}
 
         syn IdDecl IfStmt.localLookup(String name){
                 System.out.println("In IfStmt.localLookup("+name+")");
@@ -100,10 +191,21 @@ If this is removed or commented away then the compiler throws a WARNING, but tha
                 return null;
         }
 
+	syn IdDecl FuncCall.localLookup(String name){
+                System.out.println("In FuncCall.localLookup("+name+")");
+		return null;
+	}
+	
+	syn IdDecl Numeral.localLookup(String name){
+                System.out.println("In FuncStmt.localLookup("+name+")");
+		return null;
+	}
+	
 
-
-
-
+	syn IdDecl BinaryExpr.localLookup(String name){
+                System.out.println("In BinaryExpr.localLookup("+name+")");
+		return null;
+	}
 
 /* Interesting methods in ParamFunc:
 	getName() -> IdDecl
@@ -141,7 +243,7 @@ If this is removed or commented away then the compiler throws a WARNING, but tha
 		for (int j=0; j<getNumStmts(); j++){
 			System.out.println("Should be entering lookup for: "+getStmts(j).getClass().getName());
 			IdDecl decl = getStmts(j).localLookup(name);
-			System.out.println("	Returning: "+decl.getID());
+			System.out.println("	Returning: "+decl.getID()+"after getStmts("+j+").localLookup("+name+")");
 			return !decl.isUnknown() ? decl : lookup(name);
 		}
 		System.out.println("	Returning: unknownDecl()");

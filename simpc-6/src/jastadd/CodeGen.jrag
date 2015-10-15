@@ -1,0 +1,173 @@
+/**
+ * @author daniellundell91@gmail.com
+ */
+aspect CodeGen {
+
+	public void Program.genCode(PrintStream out) {
+		//START OF PROGRAM
+		out.println("		.global _start");
+		out.println("		.data");
+		out.println("		buf: .skip 1024");
+		out.println("		.text");	
+		out.println("		_start:");	
+		//call main function	
+		out.println("		call main");
+		for(ParamFunc paFu: getParamFuncList()){
+			paFu.genCode(out);
+		}
+		
+		//call sys_exit and helper function
+		out.println(		"exit:");
+		out.println(		"movq $0, %rdi");
+		out.println(		"movq $60, %rax");
+		out.println(		"syscall");
+		//END OF PROGRAM
+		//ADD THE HELPER FUNCTIONS
+
+	}
+	
+	public void ParamFunc.genCode(PrintStream out){
+		out.println(		getName().getID()+":");
+		out.println(		"pushq %rbp");
+		out.println(		"movq %rsp, %rbp");
+		//Add parameter to stack
+		if(hasParams() != false){
+			out.println(	"subq $"+(getNumParams()*8)+", %rsp");
+		
+			for(Param pa: getParamsList()){
+				pa.genCode(out);
+			}
+		}
+
+		//Return to caller
+		out.println(		"movq %rbp, %rsp");
+		out.println(		"popq %rbp");
+		out.println(		"ret");
+		//add the fucking code
+	}
+	
+	//Generate param and store
+	
+	public void Param.genCode(PrintStream out){
+		out.println(		" movq "+getIdDecl().address()+", %rsi");
+	}
+
+	//Generate code to add stmts
+	abstract public void Stmt.genCode(PrintStream out);
+
+	public void WhileStmt.genCode(PrintStream out){
+		out.println(		"loop_start:");
+		out.println(		"cmpq $1, $2");//Change to actual
+		out.println(		"jge loop_end");
+		//loop body
+		out.println(		"jmp loop_start"); 
+		out.println(		"loop_end:");
+
+	}
+
+	public void IfStmt.genCode(PrintStream out){
+		out.println(		"cmpq $10, %rax");
+		out.println(		"jl else_lbl");
+		out.println(		"then_lbl:");
+		//then body
+		out.println(		"jmp fi");
+		out.println(		"fi:");
+	}
+
+	public void ElseStmt.genCode(PrintStream out){
+		out.println(		"else_lbl:");
+		//else body
+	}
+	
+	public void ReturnStmt.genCode(PrintStream out){
+	}
+
+	public void FuncStmt.genCode(PrintStream out){
+	}
+
+	public void Assignment.genCode(PrintStream out){
+	}
+
+	public void Declare.genCode(PrintStream out){
+	}
+	/**
+ 	 * Generate code to evaluate the expression and
+ 	 * store the result in RAX.
+ 	 *
+ 	 * This must be implemented for every subclass of Expr!
+ 	 */
+//	abstract public void Expr.genEval(PrintStream out);
+
+	public void Numeral.genEval(PrintStream out) {
+		out.println("        movq $" + getNUMERAL() + ", %rax");
+	}
+
+	public void IdUse.genEval(PrintStream out) {
+		out.println("        movq " + decl().address() + ", %rax");
+	}
+
+/*	public void Mul.genEval(PrintStream out) {
+		getLeft().genEval(out);
+		out.println("        pushq %rax");
+		getRight().genEval(out);
+		out.println("        movq %rax, %rbx");
+		out.println("        popq %rax");
+		out.println("        imulq %rbx, %rax");
+	}
+
+	public void Div.genEval(PrintStream out) {
+		getLeft().genEval(out);
+		out.println("        pushq %rax");
+		getRight().genEval(out);
+		out.println("        movq %rax, %rbx");
+		out.println("        popq %rax");
+		out.println("        movq $0, %rdx");// NB: clear RDX to prepare division RDX:RAX / RBX
+		out.println("        idivq %rbx");
+	}
+
+	public void Let.genEval(PrintStream out) {
+		// evaluate bindings:
+		for (int i = 0; i < getNumBinding(); ++i) {
+			getBinding(i).genCode(out);
+		}
+		getExpr().genEval(out);
+	}
+
+	public void Ask.genEval(PrintStream out) {
+		out.println("        pushq ask_msg_len");
+		out.println("        pushq $ask_message");
+		out.println("        call print_string");
+		out.println("        addq $16, %rsp");
+		out.println("        call read");
+	}
+
+	public void Binding.genCode(PrintStream out) {
+		getExpr().genEval(out);
+		out.println("        movq %rax, " + getIdDecl().address());
+	}
+
+	/**
+ 	 * Address of local variable variable in the current stack frame.
+ 	 */
+	syn String IdDecl.address() = "-"+(localIndex()*8)+"(%rbp)";
+
+	/**
+ 	 * Local variable counting.
+ 	 */
+	syn int ASTNode.numLocals() = lastNode().localIndex() - localIndex();
+
+	/**
+ 	 * Local variable numbering.
+ 	 */
+	syn int ASTNode.localIndex() = prevNode().localIndex();
+	eq Program.localIndex() = 0;
+	eq IdDecl.localIndex() = prevNode().localIndex() + 1;
+
+	inh ASTNode ASTNode.prevNode();
+	eq ASTNode.getChild(int i).prevNode() = prevNode(i);
+	syn ASTNode ASTNode.lastNode() = prevNode(getNumChild());
+	syn ASTNode ASTNode.prevNode(int i) = i>0 ? getChild(i-1).lastNode() : this;
+
+
+
+}

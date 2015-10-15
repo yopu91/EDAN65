@@ -1,0 +1,11 @@
+int main(int a, int b){
+	int a;
+}
+
+int gcd(){
+	int a;
+}
+
+int gcd2(){
+	int a;
+}

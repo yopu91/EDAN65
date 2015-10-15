@@ -41,7 +41,8 @@
 		<mkdir dir="${gen.dir}" />
 		<jastadd package="lang.ast"
 			outdir="${gen.dir}"
-			beaver="true">
+			beaver="true"
+			cache="all">
 			<fileset dir="${src.dir}/jastadd">
 				<include name="*.ast" />
 				<include name="*.jadd" />

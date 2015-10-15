@@ -12,6 +12,16 @@ Attribute grammars:
 
 Tips:  localLookup should not call lookup. It should never do that, since localLookup looks for local declarations and
  not for declarations defined somewhere else (which is what lookup finds).
+
+
+The only declarations we are interested in are
+int FFF (int a)
+	int b
+
+FFF, a and b
+
+
+TA bort lookups i assignments och dylikt. Det är bara i decl, paramfunc och params som det är intressant --> allt annat är överflödigt
 ***************************************/
 
 
@@ -21,6 +31,8 @@ aspect NameAnalysis {
 	syn IdDecl IdUse.decl() = lookup(getID());
 
 	inh IdDecl IdUse.lookup(String name);
+
+
 
 	inh IdDecl ParamFunc.lookup(String name); 
 	
@@ -32,16 +44,29 @@ aspect NameAnalysis {
 
 	inh IdDecl Expr.lookup(String name);
 
+	syn IdDecl Expr.localLookup(String name);
 
-
-	eq Program.getChild().lookup(String name){
+	syn IdDecl IdUse.localLookup(String name) {
+		System.out.println("TEA AND BISCUITS!!!");
 		return unknownDecl();
 	}
-	
+
+
+/*Checks for declarations of method-names*/
+	eq Program.getChild().lookup(String name){
+		for(int i = 0; i<getNumParamFunc(); i++){
+			IdDecl decl = getParamFunc(i).getName();
+			if(decl.getID().equals(name)){
+				return decl;
+			}
+		}
+		return unknownDecl();
+	}
+	/*
 	eq Program.getParamFunc(int index).lookup(String name){
 		return getParamFunc(index).localLookup(name);
 	}
-
+*/
 
 /*
 Declare:Stmt ::= Identifier:IdDecl [Expr];
@@ -54,17 +79,9 @@ Declare:Stmt ::= Identifier:IdDecl [Expr];
 			return getIdentifier();
 		}
 
-		if (hasExpr()){
-/*
-			if(getExpr().getIdentifier().getID().equals(name)){
-				return getExpr().getIdentifier();
-			}
-*/
-			System.out.println("Decl has expr.");
-		}
-
 		return unknownDecl();
 	}
+
 
 /*
 Assignment:Stmt ::= Identifier:IdUse Expression:Expr;
@@ -72,18 +89,19 @@ Assignment:Stmt ::= Identifier:IdUse Expression:Expr;
 
         syn IdDecl Assignment.localLookup(String name){
                 System.out.println("In Assignment.localLookup("+name+")");
+
                 if(getIdentifier().getID().equals(name)){
-//                      return lookup(getIdentifier().getID());  
-			return getIdentifier().decl(); //Correct?
+			IdDecl decl = getIdentifier().decl();
+			return decl.isUnknown() ? decl : lookup(name); //getIdentifier().decl(); //Correct?
                 }
 
 /*
 		Expr expression = getExpression();
 		IdDecl decl = expression.localLookup(name);
-		return !decl.isUnknown() ;
+		return !decl.isUnknown() ? decl : lookup(name) ;
 */
-                return unknownDecl();
 
+		return unknownDecl();
         }
 
 
@@ -150,6 +168,7 @@ WhileStmt:Stmt ::= Cond:Expr Stmt*;
 	getStmts(int index) -> Stmt
 */
 
+
 	syn IdDecl ParamFunc.localLookup(String name){
 
 		System.out.println("In ParamFunc.localLookup("+name+")");
@@ -172,13 +191,14 @@ WhileStmt:Stmt ::= Cond:Expr Stmt*;
 		//For each Stmt in the paramfunc --> call that particular statements locallookup
 
 		for (int j=0; j<getNumStmts(); j++){
-			System.out.println("Should be entering lookup for: "+getStmts(j).getClass().getName());
+					System.out.println("Should be entering lookup for: "+getStmts(j).getClass().getName());
 			IdDecl decl = getStmts(j).localLookup(name);
-			System.out.println("	Returning: "+decl.getID()+"after getStmts("+j+").localLookup("+name+")");
-			return !decl.isUnknown() ? decl : lookup(name);
+					System.out.println("	Returning: "+decl.getID()+"after getStmts("+j+").localLookup("+name+")");
+//			return !decl.isUnknown() ? decl : lookup(name);
+			return decl;
 		}
 
-		System.out.println("	Returning: unknownDecl()");
+		System.out.println("	Returning: unknownDecl() at end of ParamFunc.localLookup()");
 		return unknownDecl();
 	} //END of ParamFunc.localLookup();
 
@@ -211,9 +231,62 @@ aspect CircularDefinitions {
 	}
 	inh boolean IdUse.inExprOf(IdDecl decl);
 	eq Program.getChild().inExprOf(IdDecl decl) {
-		System.out.println("	Returning false for Program.getChild().inExprOf( "+ decl.getID());		
+		System.out.println("	Returning false for Program.getChild().inExprOf( "+ decl.getID()+")");		
+		return false;
+	}
+/*	eq Assignment.getIdentifier().inExprOf(IdDecl decl){
+		if(decl == getIdentifier().decl()){
+			return true;
+		}
 		return false;
 	}	
+*/
 		
 }
+
+
+
+
+/**************************************************************************************
+
+Program ::= ParamFunc*;
+ParamFunc               ::= Name:IdDecl Params:Param* Stmts:Stmt*;
+Param                   ::= IdDecl;
+
+abstract Stmt;
+
+WhileStmt:Stmt          ::= Cond:Expr Stmt*;
+IfStmt:Stmt             ::= Cond:Expr Then:Stmt* [ElseStmt];
+ElseStmt:Stmt           ::= Stmt*;
+ReturnStmt:Stmt         ::= Expr;
+FuncCall:Expr           ::= Name:IdUse E:Expr*;
+
+FuncStmt:Stmt           ::= FuncCall;
+
+
+Assignment:Stmt         ::= Identifier:IdUse Expression:Expr;
+Declare:Stmt            ::= Identifier:IdDecl [Expr];
+
+abstract Expr;
+Numeral:Expr            ::= <NUMERAL>;
+IdUse:Expr              ::= <ID>; 
+IdDecl                  ::= <ID>; 
+
+UnknownDecl : IdDecl;
+
+BinaryExpr:Expr         ::= Left:Expr Right:Expr;
+Add:BinaryExpr;
+Sub:BinaryExpr;
+Div:BinaryExpr;
+Mul:BinaryExpr;
+Mod:BinaryExpr;
+
+Neq:BinaryExpr;
+Eq:BinaryExpr;
+Leq:BinaryExpr;
+Lthn:BinaryExpr;
+Geq:BinaryExpr;
+Gthn:BinaryExpr;
+
+*******************************************************/
 

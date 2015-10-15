@@ -33,7 +33,8 @@ public class Compiler {
 			LangParser parser = new LangParser();
 			Program program = (Program) parser.parse(scanner);
 			program.prettyPrint(System.out);
-            System.out.println("Found MSN: " + msnVisitor.result(program));
+            //System.out.println("Found MSN: " + msnVisitor.result(program));
+			System.out.println(program.dumpTree());	
 		} catch (FileNotFoundException e) {
 			System.out.println("File not found!");
 			System.exit(1);

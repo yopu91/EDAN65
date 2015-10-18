@@ -1,8 +1,8 @@
 /*FINITO*/
 
 Program ::= ParamFunc*;
-ParamFunc	 	::= Name:IdDecl Params:Param* Stmts:Stmt*;
-Param			::= IdDecl;
+ParamFunc	 	::= Type:TypeId Name:IdDecl Params:Param* Stmts:Stmt*;
+Param			::= Type:TypeId IdDecl;
 
 abstract Stmt;
 
@@ -16,13 +16,21 @@ FuncStmt:Stmt 		::= FuncCall; //This line is needed so that a function (such as 
 
 
 Assignment:Stmt		::= Identifier:IdUse Expression:Expr;
-Declare:Stmt		::= Identifier:IdDecl [Expr];
+Declare:Stmt		::= Type:TypeId IdDecl [Expr];
 
-
+/****************************************************PILLEPILL*/
+UnknownDecl : IdDecl;
+UnknownFunc : ParamFunc;
+/***************************************************************/
 abstract Expr;
 Numeral:Expr		::= <NUMERAL>;
 IdUse:Expr		::= <ID>; //använd
 IdDecl			::= <ID>; //deklarera
+
+abstract TypeId ::= <ID:String>;
+IntType : TypeId;
+BoolType : TypeId;
+UnknownType : TypeId;
 
 BinaryExpr:Expr		::= Left:Expr Right:Expr;
 

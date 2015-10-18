@@ -1,0 +1,53 @@
+aspect PredefinedFunctions {
+
+	class Printer extends ParamFunc {
+        	public Printer() {
+            		super(new IntType(), new IdDecl("print"), 
+				new List<Param>( new Param( new IntType(), new IdDecl("value")) ), new List<Stmt>() );
+        	}
+
+	        @Override
+	        public int eval(ActivationRecord rec) {
+        	    System.out.println(rec.get("value")+"HELLO");
+	            return 0;
+        	}
+    	}
+
+    	class Reader extends ParamFunc {
+        	public Reader() {
+            		super( new IntType(), new IdDecl( "read"), new List<Param>(), new List<Stmt>() );
+        	}
+
+        	@Override
+       	 	public int eval(ActivationRecord rec) {
+            		return 0;
+        	}
+    	}
+
+
+	syn nta List<ParamFunc> Program.PredefinedFunctions() {
+	
+		List<ParamFunc> funcList = new List<ParamFunc>();
+		funcList.add(new Printer());
+		funcList.add(new Reader());
+		return funcList;
+	/*
+
+		ParamFunc read = new ParamFunc();
+		read.setName(new IdDecl("read"));
+		func.add(read);
+
+	
+		ParamFunc print = new ParamFunc();
+		print.setName(new IdDecl("print"));
+		Param param = new Param(new IntType(), new IdDecl("param1"));
+		print.setParams(param,0);
+		func.add(print);
+		return func;
+*/
+	}
+
+	inh List<ParamFunc> ASTNode.PredefinedFunctions();
+	eq Program.getChild().PredefinedFunctions() = PredefinedFunctions();
+
+}

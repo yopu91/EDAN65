@@ -1,0 +1,24 @@
+aspect PredefinedFunctions {
+	syn nta List<ParamFunc> Program.PredefinedFunctions() {
+	
+		List<ParamFunc> func = new List<ParamFunc>();
+	
+
+		ParamFunc read = new ParamFunc();
+		read.setName(new IdDecl("read"));
+		func.add(read);
+
+//Param                   ::= Type:TypeId IdDecl;
+	
+		ParamFunc print = new ParamFunc();
+		print.setName(new IdDecl("print"));
+		Param param = new Param(new IntType(), new IdDecl("param1"));
+		print.setParams(param,0);
+		func.add(print);
+		return func;
+	}
+
+	inh List<ParamFunc> ASTNode.PredefinedFunctions();
+	eq Program.getChild().PredefinedFunctions() = PredefinedFunctions();
+
+}

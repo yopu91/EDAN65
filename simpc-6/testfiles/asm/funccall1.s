@@ -10,9 +10,37 @@ movq $0, %rdi
 movq $60, %rax
 syscall
 
+f:
+pushq %rbp
+movq %rsp, %rbp
+movq $1, %rax
+pushq %rax
+call print
+addq $8,%rsp
+movq $2, %rax
+movq %rbp, %rsp
+popq %rbp
+ret
+
 main:
 pushq %rbp
 movq %rsp, %rbp
+movq $5, %rax
+pushq %rax
+movq $4, %rax
+pushq %rax
+movq $3, %rax
+pushq %rax
+movq $2, %rax
+pushq %rax
+movq $1, %rax
+pushq %rax
+call f
+addq $40,%rsp
+movq $2, %rax
+pushq %rax
+call print
+addq $8,%rsp
 movq $1, %rax
 movq %rbp, %rsp
 popq %rbp

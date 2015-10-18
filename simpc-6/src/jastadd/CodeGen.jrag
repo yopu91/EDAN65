@@ -56,29 +56,6 @@ aspect CodeGen {
 		out.println("Missing code gen for "+ this.toString());
 	}	
 	
-	public void WhileStmt.genCode(PrintStream out){
-		out.println(		"loop_start:");
-		out.println(		"cmpq $1, $2");//Change to actual
-		out.println(		"jge loop_end");
-		//loop body
-		out.println(		"jmp loop_start"); 
-		out.println(		"loop_end:");
-
-	}
-
-	public void IfStmt.genCode(PrintStream out){
-		out.println(		"cmpq $10, %rax");
-		out.println(		"jl else_lbl");
-		out.println(		"then_lbl:");
-		//then body
-		out.println(		"jmp fi");
-		out.println(		"fi:");
-	}
-
-	public void ElseStmt.genCode(PrintStream out){
-		out.println(		"else_lbl:");
-		//else body
-	}
 	
 	public void ReturnStmt.genCode(PrintStream out){
 		getExpr().genCode(out);
@@ -89,8 +66,8 @@ aspect CodeGen {
 	}
 
 	public void Assignment.genCode(PrintStream out){
-		getExpression().genCode(out);
-		out.println("		movq %rax, "+getIdentifier().address());	
+//		getExpression().genCode(out);
+//		out.println("		movq %rax, "+getIdentifier().address());	
 	}
 
 	public void Declare.genCode(PrintStream out){

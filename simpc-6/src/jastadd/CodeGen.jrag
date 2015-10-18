@@ -66,15 +66,15 @@ aspect CodeGen {
 	}
 
 	public void Assignment.genCode(PrintStream out){
-//		getExpression().genCode(out);
-//		out.println("		movq %rax, "+getIdentifier().address());	
+		getExpression().genCode(out);
+		out.println("		movq %rax, "+getIdentifier().decl().address());	
 	}
 
 	public void Declare.genCode(PrintStream out){
 		out.println(		"subq $8, %rsp");
 		if(hasExpr()){
 			getExpr().genCode(out);
-			out.println("	movq %rax, "+getIdentifier().address());
+			out.println("	movq %rax, "+getIdDecl().address());
 		}
 	}
 
@@ -99,29 +99,57 @@ aspect CodeGen {
 
 	public void BinaryExpr.cmpGenCode(PrintStream out){
 		evalGenCode(out);
-		
+		out.println(		"movq %rax, %rcx");
+		out.println(		"movq $0, %rax");
+		out.println(		"movq $1, %rdx");
+		out.println(		"cmpq %rbx, %rcx");
 	}	
-	//ADD
+	
 	public void Add.genCode(PrintStream out){
 		evalGenCode(out);
 		out.println(		"addq %rbx, %rax");
 	}
 
-	//SUB
 	public void Sub.genCode(PrintStream out){
 		out.println(		"subq %rbx, %rax");
 	}
 
-	//DIV
 	public void Div.genCode(PrintStream out){
 		out.println(		"idivq %rbx, %rax");
 	}
-
-	//MUL
+	
 	public void Mul.genCode(PrintStream out){
 		out.println(		"imulq %rbx, %rax");
 	}
+
+	public void Eq.genCode(PrintStream out){
+		cmpGenCode(out);
+		out.println(		"cmovne %rdx, %rax");
+	}	
 	
+	public void Neq.genCode(PrintStream out){
+		cmpGenCode(out);
+		out.println(		"cmovne %rdx, %rax");
+	}
+	
+	public void Leq.genCode(PrintStream out){
+		cmpGenCode(out);
+		out.println(		"cmovle %rdx, %rax");
+	}	
+	public void Lthn.genCode(PrintStream out){
+		cmpGenCode(out);
+		out.println(		"cmovl %rdx, %rax");
+	}	
+	
+	public void Geq.genCode(PrintStream out){
+		cmpGenCode(out);
+		out.println(		"cmovge %rdx, %rax");
+	}	
+
+	public void Gthn.genCode(PrintStream out){
+		cmpGenCode(out);
+		out.println(		"cmovg %rdx, %rax");
+	}	
 
 	public void FuncCall.genCode(PrintStream out){
 		for(int i = getNumE()-1; i >= 0; i--){
@@ -148,7 +176,7 @@ aspect CodeGen {
 	
 	//Check for local variable
 	inh boolean IdDecl.isLocalVariable();
-	eq Declare.getIdentifier().isLocalVariable() = true;
+	eq Declare.getType().isLocalVariable() = true;
 	eq Param.getIdDecl().isLocalVariable() = false; 
 	eq ParamFunc.getName().isLocalVariable() = false; 
 	

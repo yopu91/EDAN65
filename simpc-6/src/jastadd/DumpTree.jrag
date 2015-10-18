@@ -22,7 +22,14 @@ aspect DumpTree {
 		}
 		out.println(getClass().getSimpleName());
 		for (ASTNode child: this) {
-			child.dumpTree(out, indent+1);
+			if (child == null) {
+				for (int i = 0; i < indent+1; i++) {
+					out.print(DUMP_TREE_INDENT);
+				}
+				out.println("null");
+			} else {
+				child.dumpTree(out, indent+1);
+			}
 		}
 	}
 }

@@ -166,7 +166,7 @@ aspect PrettyPrint {
 
 	public void Declare.prettyPrint(PrintStream out, String ind) {
 		out.append(ind + "int ");
-		getIdentifier().prettyPrint(out, ind);
+		getIdDecl().prettyPrint(out, ind);
 		if(hasExpr()){
 			out.append(" = ");
 			getExpr().prettyPrint(out, ind);

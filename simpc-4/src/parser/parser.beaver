@@ -9,8 +9,7 @@
 	}
 :};
 
-
-%terminals ID, NUMERAL, ASSIGN, IF,ELSE, WHILE, INT, RETURN, COMMA;
+%terminals ID, NUMERAL, ASSIGN, IF,ELSE, WHILE, INT, RETURN, COMMA, BOOL;
 //Structure terminals
 %terminals LPAR, RPAR, LBRACKET, RBRACKET, SEMI;
 
@@ -44,6 +43,8 @@
 %typeof factor = "Expr";
 %typeof compare = "Expr";
 %typeof sum = "Expr";
+%typeof type_id = "TypeId";
+
 %goal program;
 
 
@@ -53,7 +54,7 @@
 program = func_list.a {: return new Program(a); :};
 
 
-paramFunc = INT iddecl.id LPAR param_list.p RPAR LBRACKET stmt_list.t RBRACKET  {: return new ParamFunc(id,p,t); :};
+paramFunc = type_id.type iddecl.id LPAR param_list.p RPAR LBRACKET stmt_list.t RBRACKET  {: return new ParamFunc(type,id,p,t); :};
 
 funccall = idUse.id LPAR arg_list.l RPAR {:return new FuncCall(id,l);:};
 
@@ -65,7 +66,7 @@ stmt = ifStmt | whileStmt| declare | assign | returnStmt | funcStmt;
 ifStmt = IF LPAR expr.a RPAR LBRACKET stmt_list.t RBRACKET {:return new IfStmt(a,t, new Opt());:}
 	| IF LPAR expr.a RPAR LBRACKET stmt_list.t RBRACKET else.e {:return new IfStmt(a,t, new Opt(e));:};
 
-param = INT iddecl.id {:return new Param(id);:};
+param = type_id.type iddecl.id {: return new Param(type, id); :};
 
 param_list = param.par {: return new List().add(par); :}
        	 | param_list.a COMMA param.par {: return a.add(par); :}
@@ -73,6 +74,11 @@ param_list = param.par {: return new List().add(par); :}
        	 ;
 
 arg = expr;
+
+type_id = 
+	INT.t {: return new IntType(t); :}
+	| BOOL.t {: return new BoolType(t); :};
+
 
 arg_list =
         arg.ar {: return new List().add(ar); :}
@@ -89,8 +95,8 @@ else=
 whileStmt = WHILE LPAR expr.a RPAR LBRACKET stmt_list.t RBRACKET {:return new WhileStmt(a,t);:};
 
 
-declare = INT iddecl.id SEMI {: return new Declare(id, new Opt());:} 
-	| INT iddecl.id ASSIGN expr.a SEMI {: return new Declare(id,new Opt(a));:}
+declare = type_id.type iddecl.id SEMI {: return new Declare(type,id, new Opt());:} 
+	| type_id.type iddecl.id ASSIGN expr.a SEMI {: return new Declare(type,id,new Opt(a));:}
 	;
 
 returnStmt = RETURN expr.a SEMI {: return new ReturnStmt(a);:};
@@ -108,27 +114,6 @@ func_list =
         paramFunc.func {: return new List().add(func); :}
         | func_list.a paramFunc.func {: return a.add(func); :}
         ;
-
-/*
-compare = expr2.a EQ expr2.b {: return new Eq(a,b);:}
-	| expr2.a NEQ expr2.b {: return new Neq(a,b);:}
-	| expr2.a GTHN expr2.b {: return new Gthn(a,b);:}
-	| expr2.a LTHN expr2.b {: return new Lthn(a,b);:}
-	| expr2.a GEQ expr2.b {: return new Geq(a,b);:}
-	| expr2.a LEQ expr2.b {:return new Leq(a,b);:}
-	;
-
-*/
-
-/*
-compare = e.a EQ expr.b {: return new Eq(a,b);:}
-        | expr.a NEQ expr.b {: return new Neq(a,b);:}
-        | expr.a GTHN expr.b {: return new Gthn(a,b);:}
-        | expr.a LTHN expr.b {: return new Lthn(a,b);:}
-        | expr.a GEQ expr.b {: return new Geq(a,b);:}
-        | expr.a LEQ expr.b {:return new Leq(a,b);:}
-        ;
-*/
 
 
 compare = sum.a EQ sum.b {: return new Eq(a,b);:}

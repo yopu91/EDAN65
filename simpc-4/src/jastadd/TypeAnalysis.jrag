@@ -1,0 +1,389 @@
+aspect TypeAnalysis {
+
+
+
+/******************* Non-terminal attributes ************/
+	syn nta IntType Program.IntType() = new IntType("int");
+
+	syn nta BoolType Program.BoolType() = new BoolType("bool");
+
+	syn nta UnknownType Program.unknownType() = new UnknownType("<UnknownType>");
+
+// public ParamFunc(TypeId p0, IdDecl p1, List<Param> p2, List<Stmt> p3)
+	syn nta UnknownFunc Program.unknownFunc() = new UnknownFunc( unknownType(), new IdDecl("unknownFunc"), new List<Param>(),new List<Stmt>());
+
+
+
+
+
+
+
+/********************************** INT */
+	inh IntType ASTNode.IntType();
+	
+	eq Program.getChild().IntType() = IntType();	
+
+
+
+
+/********************************* UnknownType */
+	inh UnknownType ASTNode.unknownType();
+
+	eq Program.getChild().unknownType() = unknownType();
+
+	syn boolean TypeId.isUnknownType() = false;
+
+	eq UnknownType.isUnknownType() = true;
+
+	syn TypeId UnknownDecl.type() = unknownType();
+
+
+
+
+
+
+
+/********************************* BoolType */
+	inh BoolType ASTNode.BoolType();
+
+        eq Program.getChild().BoolType() = BoolType();
+
+
+
+
+
+
+
+/******************************* FUNCTIONS */
+
+	inh boolean IdDecl.isVariable();		
+	syn boolean IdUse.isVariable() = false;
+	
+
+	eq Declare.getIdDecl().isVariable() = true;
+	eq ParamFunc.getName().isVariable() = false;
+	eq Param.getIdDecl().isVariable() = true;
+	eq Program.getChild().isVariable() = false;
+
+
+	inh boolean IdDecl.isFunction();
+    	inh ParamFunc IdDecl.function();
+
+	inh UnknownFunc ASTNode.unknownFunc();
+	eq Program.getChild().unknownFunc() = unknownFunc();
+
+
+    	syn boolean IdUse.isFunction() = decl().isFunction();
+    	syn ParamFunc IdUse.function() = decl().function();
+
+    	eq ParamFunc.getName().function() = this;
+    	eq ParamFunc.getName().isFunction() = true;
+
+    	eq Param.getIdDecl().function() = unknownFunc();
+    	eq Param.getIdDecl().isFunction() = false;
+
+    	eq Declare.getIdDecl().function() = unknownFunc();
+    	eq Declare.getIdDecl().isFunction() = false;
+
+
+    	eq Program.getChild().isFunction() = false;
+    	eq Program.getChild().function() = unknownFunc();
+
+    	syn boolean UnknownDecl.isFunction() = false;
+    	syn ParamFunc UnknownDecl.function() = unknownFunc();
+
+    	syn boolean UnknownFunc.isFunction() = true;
+    	syn ParamFunc UnknownFunc.function() = unknownFunc();
+
+
+
+
+
+	syn TypeId TypeId.type() {
+		switch(getID()) {
+           		case "int": return new IntType();
+            		case "bool": return new BoolType();
+        	}
+        	return new UnknownType();
+	}
+
+/************************************************/
+/* COMPABILITY TEST --> overrides equals	*/
+/************************************************/
+
+    	syn boolean TypeId.comp(TypeId toMatch) {
+		if(toString().equals("<UnknownType>")
+		|| toMatch.getID().equals("<UnknownType>") ){
+			return true; //UnknownType compatible with all!
+		}else if(toString().equals(toMatch.toString())){
+			return true; // equal types are compatible!
+		}
+		return false;
+			
+	}
+
+
+/***************** HELPER METHODS 	*/
+
+	syn String IntType.toString() = "int";
+    	syn String BoolType.toString() = "bool";
+   	syn String UnknownType.toString() = "<UnknownType>";
+
+
+
+
+
+
+
+   	inh TypeId IdDecl.expectedType(); 
+
+    	syn TypeId IdDecl.type() = new IntType();
+
+	eq Program.getChild().expectedType() = new UnknownType();
+
+	eq ParamFunc.getName().expectedType() = getName().type();
+	eq Param.getIdDecl().expectedType() = getIdDecl().type();
+	eq Declare.getIdDecl().expectedType() = getIdDecl().type();
+
+
+    
+	syn TypeId Expr.type()    = new UnknownType(); 
+
+
+	eq Eq.type() = new BoolType();
+	eq Neq.type() = new BoolType();
+	eq Geq.type() = new BoolType();
+    	eq Gthn.type() = new BoolType();
+    	eq Lthn.type() = new BoolType();
+    	eq Leq.type() = new BoolType();
+		
+	eq Add.type() = new IntType();
+	eq Sub.type() = new IntType();
+        eq Div.type() = new IntType();
+        eq Mul.type() = new IntType();
+        eq Mod.type() = new IntType();
+
+
+	eq IdUse.type() = decl().type();
+	eq FuncCall.type() = new IntType();
+	eq Numeral.type() = new IntType();
+
+
+	eq BinaryExpr.type() { 
+        	if (!getLeft().type().comp(getRight().type())){
+            		return new UnknownType();
+		}
+        	return getLeft().type();
+	}
+
+	inh TypeId Expr.expectedType();
+
+    	inh boolean Expr.checkComp(TypeId t);
+
+    	eq Assignment.getExpression().checkComp(TypeId t) = t.comp(getIdentifier().decl().type());
+	eq Assignment.getIdentifier().checkComp(TypeId t) = true;
+
+	eq Declare.getExpr().checkComp(TypeId t) = t.comp(getIdDecl().type());
+
+	eq WhileStmt.getCond().checkComp(TypeId t)    = t.comp(new BoolType());
+
+	eq IfStmt.getCond().checkComp(TypeId t)       = t.comp(new BoolType());
+
+    	eq ReturnStmt.getExpr().checkComp(TypeId t)  = t.comp(new IntType()); //change to expected?
+
+	eq FuncStmt.getFuncCall().checkComp(TypeId t) = true; //Needed for JastAdd to stop complaining.
+
+	eq FuncCall.getE().checkComp(TypeId t) = t.comp(expectedType());
+
+
+
+
+	eq BinaryExpr.getLeft().checkComp(TypeId t) {
+	        if (!t.comp(getRight().type())){
+        		return false;
+		}
+	        return t.comp(expectedType());
+    	}
+
+	eq BinaryExpr.getRight().checkComp(TypeId t) {
+        	if (!t.comp(getLeft().type())){
+			return false;
+		}
+        	return t.comp(expectedType());
+    	}
+
+
+
+    	inh TypeId Stmt.expectedType(); 
+
+    	eq ReturnStmt.getExpr().expectedType() = expectedType(); //Change to new IntType(); ?????? Works equally fine
+    	eq Assignment.getExpression().expectedType() = getIdentifier().type();
+    	eq Declare.getExpr().expectedType() = getIdDecl().type();
+
+
+
+
+
+
+/******************* TYPE ERRORS */
+
+
+    	syn boolean Assignment.assignFuncError() = getIdentifier().isFunction();
+
+
+/*	This method makes the compiler complain when code looks like this: int b = 3; int c = b(); 	*
+*	Should probably use isVariable() instead but same shit different name.				*/
+	syn boolean FuncCall.callVariableError() = !getName().decl().isFunction();			
+	
+
+  	syn boolean Stmt.typeError() = false;
+
+   	syn boolean ReturnStmt.typeError() = !getExpr().type().comp(new IntType()); // NOT SURE if correct
+
+
+    	syn boolean Declare.typeError() {
+		if (!hasExpr()){
+            		return false;
+		}
+        	return !getIdDecl().type().comp(getExpr().type());
+    	}
+
+    	syn boolean Assignment.typeError() = !getIdentifier().type().comp(getExpression().type());
+    	syn boolean IfStmt.typeError() = !getCond().type().comp(new BoolType());
+    	syn boolean WhileStmt.typeError() = !getCond().type().comp(new BoolType());
+
+
+
+    	syn boolean ParamFunc.typeError() {
+        	if (!getType().comp(new IntType())){
+			return true;
+		}
+		return false;
+    	}
+
+	
+/******* Never called ???? */
+	syn boolean FuncStmt.typeError() {
+		if(getFuncCall().getName().isVariable()){
+			return true;
+		}
+		return false;
+	}
+
+
+
+/*Checks if calling with right amount of args*/
+    	syn boolean FuncCall.paramError() = getNumE() != getName().function().getNumParams();
+
+
+    	syn boolean FuncCall.paramTypeError() {
+	        ParamFunc func = getName().function();
+        	for(int i = 0; i < getNumE(); i++) {
+            		if (!getE(i).type().comp(func.getParams(i).getIdDecl().type()))
+                		return true;
+        	}
+        	return false;
+    	}
+
+   	syn boolean BinaryExpr.typeError() {
+        	return !getLeft().type().comp(getRight().type());
+    	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/////////////////OLD CODE BELOW
+
+
+
+
+
+
+/****************************************************************/
+/*	Check Declare, ParamFunc and Param for int		*/
+/****************************************************************/
+/*
+	syn boolean Declare.isNotInt(){
+		if(getType().isINT()){
+			return false;
+		}
+		return true;
+	}
+	
+	syn boolean ParamFunc.isNotInt(){
+		if(getType().isINT()){
+			return false;
+		}
+		return true;
+	}
+
+	syn boolean Param.isNotInt(){
+		if(getType().isINT()){
+			return false;
+		}
+		return true;
+	}
+
+*/
+/****************************************************************/
+/*      Check WhileStmt and IfStmt for boolean		        */
+/****************************************************************/
+
+
+	
+/****************************************************************
+* 	DET HÄR GÅR IN I HISTORIEBÖCKERNA SOM DEN FULASTE	*
+*	FULKODEN JAG NÅGONSIN PRODUCERAT			*
+*****************************************************************/
+/*	syn boolean WhileStmt.isNotBool()  {
+		boolean isOk = false;
+		String className = getCond().getClass().getName();
+		if(className.equals("lang.ast.Neq")
+		|| className.equals("lang.ast.Eq")
+		|| className.equals("lang.ast.Lthn")
+		|| className.equals("lang.ast.Gthn")
+		|| className.equals("lang.ast.Leq")
+		|| className.equals("lang.ast.Geq") ){
+			return false;
+		}
+		return true;
+	}
+			
+	syn boolean IfStmt.isNotBool()  {
+		boolean isOk = false;
+                String className = getCond().getClass().getName();
+                if(className.equals("lang.ast.Neq")
+                || className.equals("lang.ast.Eq")
+                || className.equals("lang.ast.Lthn")
+                || className.equals("lang.ast.Gthn")
+                || className.equals("lang.ast.Leq")
+                || className.equals("lang.ast.Geq") ){
+                        return false;
+                }
+                return true;
+
+        }
+
+*/
+
+
+
+}

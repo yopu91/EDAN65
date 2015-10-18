@@ -1,9 +1,11 @@
 Program
   List
     ParamFunc
+      IntType
       IdDecl
       List
         Param
+          IntType
           IdDecl
       List
         IfStmt

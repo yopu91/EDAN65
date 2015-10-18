@@ -1,0 +1,54 @@
+/*FINITO*/
+
+Program ::= ParamFunc*;
+ParamFunc	 	::= Type:TypeId Name:IdDecl Params:Param* Stmts:Stmt*;
+Param			::= Type:TypeId IdDecl;
+
+abstract Stmt;
+
+WhileStmt:Stmt		::= Cond:Expr Stmt*;
+IfStmt:Stmt		::= Cond:Expr Then:Stmt* [ElseStmt];
+ElseStmt:Stmt		::= Stmt*; 
+ReturnStmt:Stmt		::= Expr;
+FuncCall:Expr		::= Name:IdUse E:Expr*;
+
+FuncStmt:Stmt 		::= FuncCall; //This line is needed so that a function (such as gcd(a,b)) can be evaluated to an expression
+
+
+Assignment:Stmt		::= Identifier:IdUse Expression:Expr;
+Declare:Stmt		::= Type:TypeId IdDecl [Expr];
+
+/****************************************************PILLEPILL*/
+UnknownDecl : IdDecl;
+UnknownFunc : ParamFunc;
+/***************************************************************/
+abstract Expr;
+Numeral:Expr		::= <NUMERAL>;
+IdUse:Expr		::= <ID>; //använd
+IdDecl			::= <ID>; //deklarera
+
+abstract TypeId ::= <ID:String>;
+IntType : TypeId;
+BoolType : TypeId;
+UnknownType : TypeId;
+
+BinaryExpr:Expr		::= Left:Expr Right:Expr;
+
+Add:BinaryExpr;
+Sub:BinaryExpr;
+Div:BinaryExpr;
+Mul:BinaryExpr;
+Mod:BinaryExpr;
+
+Neq:BinaryExpr;
+Eq:BinaryExpr;
+Leq:BinaryExpr;
+Lthn:BinaryExpr;
+Geq:BinaryExpr;	
+Gthn:BinaryExpr;
+
+
+abstract Literal : Expr;
+
+IntLiteral    : Literal ::= <INT:String>;
+BoolLiteral   : Literal ::= <BOOL:String>;

@@ -45,6 +45,8 @@ Numeral = [0-9]+
 "while"		{return sym(Terminals.WHILE);}
 "="		{return sym(Terminals.ASSIGN);}
 ","		{return sym(Terminals.COMMA);}
+"true"		{return sym(Terminals.BOOL);}
+"false"		{return sym(Terminals.BOOL);}
 //Structire definitions-----------------------
 "("		{return sym(Terminals.LPAR);}
 ")"		{return sym(Terminals.RPAR);}

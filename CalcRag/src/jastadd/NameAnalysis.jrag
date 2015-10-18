@@ -3,6 +3,7 @@ aspect NameAnalysis {
 	inh IdDecl IdUse.lookup(String name);
 	
 	eq Let.getExpr().lookup(String name) {
+		System.out.println("In Let.getExpr().lookup("+name+")");
 		IdDecl decl = localLookup(name, getNumBinding()-1);
 		return !decl.isUnknown() ? decl : lookup(name);
 	}
@@ -12,6 +13,7 @@ aspect NameAnalysis {
 	syn IdDecl Let.localLookup(String name, int until) {
 		for (int i = 0; i <= until; i++) {
 			if (getBinding(i).getIdDecl().getID().equals(name)) {
+				System.out.println("getBinding("+i+").getIdDecl().getID().equals("+name+")");
 				return getBinding(i).getIdDecl();
 			}
 		}
@@ -19,6 +21,7 @@ aspect NameAnalysis {
 	}
 
 	eq Let.getBinding(int index).lookup(String name) {
+		System.out.println("In Let.getBinding("+index+").lookup("+name+")");
 		IdDecl decl = localLookup(name, index);
 		return !decl.isUnknown() ? decl : lookup(name);
 	}

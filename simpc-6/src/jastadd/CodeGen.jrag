@@ -56,7 +56,39 @@ aspect CodeGen {
 		out.println("Missing code gen for "+ this.toString());
 	}	
 	
+	public void IfStmt.genCode(PrintStream out){
+		int ctr = Program.nextCounter();
+		String if_label = "if"+ctr;
+		String else_label = "else"+ctr;
 	
+		getCond().genCode(out);
+		out.println(		"compq $0, %rax");
+		out.println(		"je "+else_label);
+		out.println(if_label+	":");
+	
+		for(Stmt s: getThenList()){
+			s.genCode(out);
+		}
+		
+		if(hasElseStmt()){
+			getElseStmt().genCode(out);	
+		}
+		out.println("end"+ if_label+":");
+	}	
+	
+	public void WhileStmt.genCode(PrintStream out){
+		String label = "while"+ Program.nextCounter();
+		out.println(label+ ":");
+		getCond().genCode(out);
+		out.println(		"cmpq $0, %rax");
+		out.println(		"je end" + label);
+		for(Stmt s: getStmtList()){
+			s.genCode(out);
+		}
+		out.println(		"jmp"+label);
+		out.println(		"end" + label+":");
+		
+	}	
 	public void ReturnStmt.genCode(PrintStream out){
 		getExpr().genCode(out);
 	}

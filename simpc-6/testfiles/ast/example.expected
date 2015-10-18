@@ -1,6 +1,7 @@
 Program
   List
     ParamFunc
+      IntType
       IdDecl
       List
       List

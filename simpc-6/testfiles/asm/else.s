@@ -13,7 +13,22 @@ syscall
 main:
 pushq %rbp
 movq %rsp, %rbp
-Missing code gen for lang.ast.IfStmt@2db0f6b2
+movq $2, %rax
+pushq %rax
+movq $1, %rax
+movq %rax, %rbx
+popq %rax
+movq %rax, %rcx
+movq $0, %rax
+movq $1, %rdx
+cmpq %rbx, %rcx
+cmovne %rdx, %rax
+compq $0, %rax
+je else1
+if1:
+movq $1, %rax
+Missing code gen for lang.ast.ElseStmt@27ddd392
+endif1:
 movq %rbp, %rsp
 popq %rbp
 ret

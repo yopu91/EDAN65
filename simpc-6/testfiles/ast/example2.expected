@@ -1,14 +1,18 @@
 Program
   List
     ParamFunc
+      IntType
       IdDecl
       List
         Param
+          IntType
           IdDecl
         Param
+          IntType
           IdDecl
       List
         Declare
+          IntType
           IdDecl
           Opt
             Numeral
@@ -18,6 +22,7 @@ Program
             IdUse
           List
             Declare
+              IntType
               IdDecl
               Opt
                 IdUse

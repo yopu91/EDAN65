@@ -84,6 +84,8 @@ aspect NameAnalysis {
                          if(s.getID().equals(name)){
                                         return s;
                          }
+			s = getStmts(k).enclosingFunction().localLookup(name);
+			System.o
 
                    }
 		return lookup(name);
@@ -104,7 +106,6 @@ aspect NameAnalysis {
 				if(s.getID().equals(name)){
 					return s;
 				}
-				
 			}
 
 		return lookup(name);
@@ -147,22 +148,51 @@ aspect NameAnalysis {
 		return localLookup(name,index);		
 	}
 
-	
-	syn IdDecl WhileStmt.localLookup(String name){
+*/	
+/*	syn IdDecl WhileStmt.localLookup(String name){
 		IdDecl decl = localLookup(name);
 		if(decl.isUnknown()){
 			decl = enclosingFunction().localLookup(name);
 		}
 		return decl; //could still be unknown
 		
-		System.out.println("Enterin localLookup("+name+") for enclosing function");
-		return enclosingFunction().localLookup(name);
+//		System.out.println("Enterin localLookup("+name+") for enclosing function");
+//		return enclosingFunction().localLookup(name);
 	}
-*/
 
-	
+*/	
+
+	eq WhileStmt.getCond().lookup(String name){
+		return lookup(name);
+	}
+	eq IfStmt.getCond().lookup(String name){
+		return lookup(name);
+	}
+
+	eq WhileStmt.getStmt(int index).lookup(String name){
+                for(int k=0; k<index; k++){
+	                  IdDecl s = getStmt(k).localLookup(name);
+        	          if(s.getID().equals(name)){
+                     	  	return s;
+                          }
+		}
+		return lookup(name);
+	}
+
+        eq IfStmt.getThen(int index).lookup(String name){
+                for(int k=0; k<index; k++){
+                          IdDecl s = getThen(k).localLookup(name);
+                          if(s.getID().equals(name)){
+                                return s;
+                          }
+                }
+                return lookup(name);
+        }
+
+
+
+
 	syn IdDecl Declare.localLookup(String name){
-	//	System.out.println("Checking if "+getIdDecl().getID()+" equals "+name);
 		if(getIdDecl().getID().equals(name)){
 			return getIdDecl();
 		}

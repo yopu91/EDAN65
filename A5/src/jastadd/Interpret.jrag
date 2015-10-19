@@ -88,7 +88,7 @@ aspect Interpret
         if (main == null)
             throw new RuntimeException("Main is undefined");
         
-	/*TODOThis code makes sure to initialize the values of the main-arguments to zero*/
+	/*TODO This code makes sure to initialize the values of the main-arguments to zero*/
 	
         main.eval(new ActivationRecord());
     }
@@ -241,4 +241,10 @@ aspect Interpret
     	@Override
     	public int Neq.eval(ActivationRecord rec) { return getLeft().eval(rec) != getRight().eval(rec) ? 1 : 0; }
 
+
+
+
 }
+
+
+

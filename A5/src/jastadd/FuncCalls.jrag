@@ -3,10 +3,10 @@ aspect FuncCalls {
 
 	inh ParamFunc Stmt.enclosingFunction();
 	eq ParamFunc.getStmts(int index).enclosingFunction() = this;
-
+	
 	inh ParamFunc Expr.enclosingFunction();
 	eq Stmt.getChild().enclosingFunction() = enclosingFunction();
-
+	
 	coll Set<ParamFunc> ParamFunc.functionCalls() [new HashSet<ParamFunc>()] with add root ParamFunc;
 
 	FuncCall contributes getName().decl().function() to ParamFunc.functionCalls() for enclosingFunction();

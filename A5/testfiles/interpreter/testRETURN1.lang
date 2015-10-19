@@ -1,5 +1,5 @@
 int testRet(int a){
-	int stop = 100;
+	int stop = 20;
 	int start = 0;
 	while (start < stop){
 		if (start == a){
@@ -15,7 +15,7 @@ int testRet(int a){
 }
 
 int main(){
-	int ottf = testRet(5);
+	int ottf = testRet(15);
 	int the_print_below_should_be_ottf_times_two = 0;
 	print(ottf);
 }

@@ -117,9 +117,21 @@ aspect NameAnalysis {
 
 *************************************************************************************************************************************************************/
 /*************************************************************************************************************************************************************/
+/*
+	syn IdDecl WhileStmt.getCond().lookup(String name){
+		IdDecl decl = localLookup(name);
+		return !decl.isUnknown() ? decl : lookup(name);
+	}
 
+	syn IdDecl WhileStmt.getStmt(int index).lookup(String name){
+		return localLookup(name,index);		
+	}
 
-
+	
+	syn IdDecl Stmt.localLookup(String name, int index){
+		
+	}
+*/
 	syn IdDecl Declare.localLookup(String name){
 	//	System.out.println("Checking if "+getIdDecl().getID()+" equals "+name);
 		if(getIdDecl().getID().equals(name)){

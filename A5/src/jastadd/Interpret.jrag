@@ -44,7 +44,7 @@ aspect Interpret
 		}
                 throw new RuntimeException("Parent == null when doing get --> Variable '" + name + "' uninitialized");
             }
-            return vars.get(name);
+           return vars.get(name);
         }
     }
 
@@ -54,8 +54,14 @@ aspect Interpret
 
     public class ReturnException extends RuntimeException {
         protected int v;
-        public ReturnException(int v) { this.v = v; }
-        public int val() { return v; }
+        public ReturnException(int v) { 
+		//System.out.println("Return exception created with v = "+v);
+		this.v = v; 
+	}
+        public int val() { 
+		//System.out.println("val() in ReturnException called. v = "+v);
+		return v;
+	 }
     }
 
     public class BreakException extends RuntimeException {
@@ -129,19 +135,9 @@ aspect Interpret
     @Override
     public void ReturnStmt.eval(ActivationRecord rec) {
         int r = getExpr().eval(rec);
-//        throw new ReturnException(r);
-    }
-/*
-    @Override
-    public void BreakStmt.eval(ActivationRecord rec) {
-        throw new BreakException();
+        throw new ReturnException(r);
     }
 
-    @Override
-    public void ContinueStmt.eval(ActivationRecord rec) {
-        throw new ContinueException();
-    }
-*/
     @Override
     public void WhileStmt.eval(ActivationRecord rec) {
         ActivationRecord scope = rec.scope();

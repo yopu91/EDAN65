@@ -1,15 +1,11 @@
 import java.util.HashSet;
-aspect FunctionCalls {
+aspect FuncCalls {
 
 	inh ParamFunc Stmt.enclosingFunction();
 	eq ParamFunc.getStmts(int index).enclosingFunction() = this;
-//	eq Block.getStatement(int index).enclosingFunction() = enclosingFunction();
-	//eq Global.getDeclareStmt().enclosingFunction() = enclosingFunction();
 
 	inh ParamFunc Expr.enclosingFunction();
 	eq Stmt.getChild().enclosingFunction() = enclosingFunction();
-
-
 
 	coll Set<ParamFunc> ParamFunc.functionCalls() [new HashSet<ParamFunc>()] with add root ParamFunc;
 

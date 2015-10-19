@@ -70,7 +70,6 @@ Numeral = [0-9]+
 "<"		{return sym(Terminals.LTHN);}
 ">="		{return sym(Terminals.GEQ);}
 ">"		{return sym(Terminals.GTHN);}
-
 //--------------------------------------------------
 ";"		{return sym(Terminals.SEMI);}
 {ID}          { return sym(Terminals.ID); }

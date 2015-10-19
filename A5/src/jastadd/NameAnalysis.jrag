@@ -67,7 +67,28 @@ aspect NameAnalysis {
 /********************************************************/
 /* 	Checking PARAMS and STMTS in ParamFuncs		*/
 /********************************************************/
+/*
+	eq ParamFunc.getParams(int index).lookup(String name){
+		for(int j=0; j<index; j++){
+                      IdDecl p = getParams(j).getIdDecl();
+                      if(p.getID().equals(name)){
+                                return p;
+                      }
+               }
+		return lookup(name);
+	}
 
+	eq ParamFunc.getStmts(int index).lookup(String name){
+		   for(int k=0; k<index; k++){
+	                 IdDecl s = getStmts(k).localLookup(name);
+                         if(s.getID().equals(name)){
+                                        return s;
+                         }
+
+                   }
+		return lookup(name);
+	}
+*/
 	eq ParamFunc.getChild().lookup(String name){
 
 			for(int j=0; j<getNumParams(); j++){
@@ -88,7 +109,6 @@ aspect NameAnalysis {
 
 		return lookup(name);
 	}
-
 
 
 /*************************************************************************************************************************************************************/
@@ -117,9 +137,30 @@ aspect NameAnalysis {
 
 *************************************************************************************************************************************************************/
 /*************************************************************************************************************************************************************/
+/*
+	syn IdDecl WhileStmt.getCond().lookup(String name){
+		IdDecl decl = localLookup(name);
+		return !decl.isUnknown() ? decl : lookup(name);
+	}
 
+	syn IdDecl WhileStmt.getStmt(int index).lookup(String name){
+		return localLookup(name,index);		
+	}
 
+	
+	syn IdDecl WhileStmt.localLookup(String name){
+		IdDecl decl = localLookup(name);
+		if(decl.isUnknown()){
+			decl = enclosingFunction().localLookup(name);
+		}
+		return decl; //could still be unknown
+		
+		System.out.println("Enterin localLookup("+name+") for enclosing function");
+		return enclosingFunction().localLookup(name);
+	}
+*/
 
+	
 	syn IdDecl Declare.localLookup(String name){
 	//	System.out.println("Checking if "+getIdDecl().getID()+" equals "+name);
 		if(getIdDecl().getID().equals(name)){

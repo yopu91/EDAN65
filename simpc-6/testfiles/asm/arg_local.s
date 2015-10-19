@@ -14,9 +14,9 @@ calc:
 pushq %rbp
 movq %rsp, %rbp
 subq $8, %rsp
-Missing code gen for lang.ast.IdUse@4f47d241
+Missing code gen for lang.ast.IdUse@27ddd392
 pushq %rax
-Missing code gen for lang.ast.IdUse@4c3e4790
+Missing code gen for lang.ast.IdUse@19e1023e
 movq %rax, %rbx
 popq %rax
 addq %rbx, %rax

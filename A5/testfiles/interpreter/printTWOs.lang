@@ -1,0 +1,16 @@
+int shouldPrintThreeTwos() {
+	int a = 2;
+    if (a == 2) {
+        print(222);
+    }
+    if (a > 10) {
+	return 999999;
+    }
+    else {
+	return a;
+    }
+}
+
+int main(){
+	shouldPrintThreeTwos();
+}

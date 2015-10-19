@@ -113,7 +113,7 @@ aspect TypeAnalysis {
 
     	syn boolean TypeId.comp(TypeId toMatch) {
 		if(toString().equals("<UnknownType>")
-		|| toMatch.getID().equals("<UnknownType>") ){
+		|| toMatch.toString().equals("<UnknownType>") ){
 			return true; //UnknownType compatible with all!
 		}else if(toString().equals(toMatch.toString())){
 			return true; // equal types are compatible!

@@ -8,8 +8,9 @@ aspect PredefinedFunctions {
 
 	        @Override
 	        public int eval(ActivationRecord rec) {
-        	    System.out.println(rec.get("value")+"HELLO");
-	            return 0;
+			/*Should print out the final value*/
+        	    	System.out.println(rec.get("value"));
+	            	return 0;
         	}
     	}
 

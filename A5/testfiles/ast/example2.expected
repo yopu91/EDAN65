@@ -15,7 +15,7 @@ Program
           IntType
           IdDecl
           Opt
-            Numeral
+            IntLiteral
         IfStmt
           Neq
             IdUse
@@ -35,6 +35,6 @@ Program
                   IdUse
         Assignment
           IdUse
-          Numeral
+          IntLiteral
         ReturnStmt
           IdUse

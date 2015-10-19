@@ -1,0 +1,32 @@
+int whileRet(int a){
+	int count=0;
+	while (count != 20){
+		int b = count*a;
+		if(b < 20){
+			print(ifRet(b));
+		}
+		else {
+			return five();
+		}
+
+		count = count + 1;
+	}
+}
+
+int ifRet(int a){
+	
+	if(a % 10 == 0){
+		return a % 10;
+	}
+	return 0;
+}
+
+int five(){
+	return 5555;
+}
+
+int main(int a){
+	a = 3;
+	int mult_of_ten = whileRet(a);
+
+}

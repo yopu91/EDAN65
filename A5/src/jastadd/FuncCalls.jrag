@@ -12,3 +12,16 @@ aspect FuncCalls {
 	FuncCall contributes getName().decl().function() to ParamFunc.functionCalls() for enclosingFunction();
  
 }
+
+aspect Reachability{
+	syn HashSet<ParamFunc> ParamFunc.reachable() circular [new HashSet<ParamFunc>()];
+	eq ParamFunc.reachable() {
+		HashSet<ParamFunc> r = new HashSet<ParamFunc>();
+  		for (ParamFunc f : functionCalls()) {
+    			//ParamFunc f = ppp.function();
+    			r.add(f);
+    			r.addAll(f.reachable());
+  		}
+  		return r;
+ 	} 
+}

@@ -94,9 +94,10 @@ aspect Interpret
     }
 
     public int ParamFunc.eval(ActivationRecord rec) {
-	if(getName().getID().equals("main")){
+//	if(getName().getID().equals("main")){
+	if(getName().uniqueName().equals("main")){
 		for(int i = 0; i<getNumParams(); i++){
-			String id = getParams(i).getIdDecl().getID();
+			String id = getParams(i).getIdDecl().uniqueName();
 			rec.decl(id,0); //initialize main args to 0
 		}
 	}
@@ -116,14 +117,17 @@ aspect Interpret
     @Override
     public void Assignment.eval(ActivationRecord rec) {
         int v = getExpression().eval(rec);
-        rec.set(getIdentifier().getID(), v);
+//        rec.set(getIdentifier().getID(), v);
+        	rec.set(getIdentifier().decl().uniqueName(), v);
     }
 
     @Override
     public void Declare.eval(ActivationRecord rec) {
         if (hasExpr()) {
             int v = getExpr().eval(rec);
-            rec.decl(getIdDecl().getID(), v);
+//            rec.decl(getIdDecl().getID(), v);
+	          rec.decl(getIdDecl().uniqueName(), v);
+
         }
     }
 
@@ -205,7 +209,7 @@ aspect Interpret
         	ParamFunc pf = getName().function();
         	ActivationRecord call = rec.scope();
         	for(int i = 0; i < getNumE(); i++) {
-            		call.decl(pf.getParams(i).getIdDecl().getID(), getE(i).eval(rec));
+            		call.decl(pf.getParams(i).getIdDecl().uniqueName(), getE(i).eval(rec));
         	}
         	return pf.eval(call);
     	}
@@ -252,7 +256,7 @@ aspect Interpret
 
 
 aspect UniqueName {
-
+/*
 	inh String ParamFunc.uniqueName(String name);
 	inh String IdDecl.uniqueName(String name);
 
@@ -263,4 +267,29 @@ aspect UniqueName {
 	eq ParamFunc.getStmts(int index).uniqueName(String name) = uniqueName(index + "_" + name);
 
 	syn String IdDecl.uniqueName() = uniqueName(getID());
+*/
+
+	
+	inh String IdDecl.appendIndex();
+//	syn String IdDecl.uniqueName() = appendIndex() + getID();
+	syn String IdDecl.uniqueName() = getID();
+	
+	eq Program.getChild().appendIndex() ="";
+	eq ParamFunc.getParams(int index).appendIndex() = "param" + index + "_";
+  	eq ParamFunc.getName().appendIndex() =  "";
+  	eq Declare.getIdDecl().appendIndex() = uniqueId();
+  
+	inh String Stmt.uniqueId();
+  	eq ParamFunc.getStmts(int index).uniqueId() = appendIndex() + Integer.toString(index) + "_";
+  	eq WhileStmt.getStmt(int index).uniqueId() = appendIndex() + Integer.toString(index) + "_";
+  	eq IfStmt.getThen(int index).uniqueId() = appendIndex() + Integer.toString(index) + "_";
+  	eq ElseStmt.getStmt(int index).uniqueId() = appendIndex() + Integer.toString(index) + "_";
+
+  
+  	inh String ParamFunc.appendIndex();
+	inh String Stmt.appendIndex();
+  	eq IfStmt.getThen(int index).appendIndex() = uniqueId();
+  	eq IfStmt.getElseStmt().appendIndex() = uniqueId();
+  	eq WhileStmt.getStmt(int index).appendIndex() = uniqueId();
+
 }

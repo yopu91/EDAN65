@@ -1,0 +1,7 @@
+fac enclosing:
+	fac
+f enclosing:
+	fac
+	print
+main enclosing:
+	f

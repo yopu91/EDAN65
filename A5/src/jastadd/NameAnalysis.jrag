@@ -189,6 +189,16 @@ aspect NameAnalysis {
                 return lookup(name);
         }
 
+        eq ElseStmt.getStmt(int index).lookup(String name){
+                for(int k=0; k<index; k++){
+                          IdDecl s = getStmt(k).localLookup(name);
+                          if(s.getID().equals(name)){
+                                return s;
+                          }
+                }
+                return lookup(name);
+        }
+
 
 
 

@@ -62,7 +62,7 @@ aspect CodeGen {
 		String else_label = "else"+ctr;
 	
 		getCond().genCode(out);
-		out.println(		"compq $0, %rax");
+		out.println(		"cmpq $0, %rax");
 		out.println(		"je "+else_label);
 		out.println(if_label+	":");
 	
@@ -70,12 +70,18 @@ aspect CodeGen {
 			s.genCode(out);
 		}
 		
+		out.println(	else_label+":");
 		if(hasElseStmt()){
 			getElseStmt().genCode(out);	
 		}
 		out.println("end"+ if_label+":");
 	}	
 	
+	public void ElseStmt.genCode(PrintStream out){
+		for(Stmt s: getStmtList()){
+			s.genCode(out);
+		}
+	}	
 	public void WhileStmt.genCode(PrintStream out){
 		String label = "while"+ Program.nextCounter();
 		out.println(label+ ":");
@@ -210,8 +216,7 @@ aspect CodeGen {
 	inh boolean IdDecl.isLocalVariable();
 	eq Declare.getType().isLocalVariable() = true;
 	eq Param.getIdDecl().isLocalVariable() = false; 
-	eq ParamFunc.getName().isLocalVariable() = false; 
-	
+//	eq ParamFunc.getType().isLocalVariable() = false; 
 	/**
  	 * Address of local variable variable in the current stack frame.
  	 */

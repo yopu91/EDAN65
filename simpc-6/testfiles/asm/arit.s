@@ -13,23 +13,7 @@ syscall
 main:
 pushq %rbp
 movq %rsp, %rbp
-movq $2, %rax
-pushq %rax
-movq $1, %rax
-movq %rax, %rbx
-popq %rax
-movq %rax, %rcx
-movq $0, %rax
-movq $1, %rdx
-cmpq %rbx, %rcx
-cmovne %rdx, %rax
-cmpq $0, %rax
-je else1
-if1:
-movq $1, %rax
-else1:
-movq $0, %rax
-endif1:
+subq %rbx, %rax
 movq %rbp, %rsp
 popq %rbp
 ret

@@ -23,10 +23,11 @@ movq $0, %rax
 movq $1, %rdx
 cmpq %rbx, %rcx
 cmovne %rdx, %rax
-compq $0, %rax
+cmpq $0, %rax
 je else2
 if2:
 movq $0, %rax
+else2:
 endif2:
 movq %rbp, %rsp
 popq %rbp

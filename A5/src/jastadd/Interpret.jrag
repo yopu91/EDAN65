@@ -183,7 +183,10 @@ aspect Interpret
     }
 
     	@Override
-	    public int IdUse.eval(ActivationRecord rec) { return rec.get(getID()); }
+	    public int IdUse.eval(ActivationRecord rec) { 
+		String id = decl().uniqueName();
+		return rec.get(id); 
+	}
 
 
 
@@ -248,3 +251,16 @@ aspect Interpret
 
 
 
+aspect UniqueName {
+
+	inh String ParamFunc.uniqueName(String name);
+	inh String IdDecl.uniqueName(String name);
+
+
+	eq ParamFunc.getChild().uniqueName(String name) = name;
+	eq ParamFunc.getParams(int index).uniqueName(String name) = name;
+	
+	eq ParamFunc.getStmts(int index).uniqueName(String name) = uniqueName(index + "_" + name);
+
+	syn String IdDecl.uniqueName() = uniqueName(getID());
+}

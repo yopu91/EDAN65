@@ -1,0 +1,21 @@
+int testRet(int a){
+	int stop = 100;
+	int start = 0;
+	while (start < stop){
+		if (start == a){
+			print(9999);
+			print(9999);
+			print(9999);
+			return a*2;
+			print(a*2);
+		}
+		print(start);
+		start = start + 1;
+	}
+}
+
+int main(){
+	int ottf = testRet(5);
+	int the_print_below_should_be_ottf_times_two = 0;
+	print(ottf);
+}

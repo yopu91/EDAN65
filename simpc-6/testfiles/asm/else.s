@@ -24,11 +24,11 @@ movq $1, %rdx
 cmpq %rbx, %rcx
 cmovne %rdx, %rax
 compq $0, %rax
-je else1
-if1:
+je else2
+if2:
 movq $1, %rax
-Missing code gen for lang.ast.ElseStmt@27ddd392
-endif1:
+Missing code gen for lang.ast.ElseStmt@64b8f8f4
+endif2:
 movq %rbp, %rsp
 popq %rbp
 ret

@@ -1,0 +1,21 @@
+int main(){
+	int stop = 10;
+	int start = 0;
+	while (start != stop){
+		print(0);
+		start = start + 1;
+	}
+
+	start = 0;
+	while(start < stop){
+		print(1);
+		start = 11;
+	}
+	
+	if(start >= stop){
+		print(2);
+	}
+	else {
+		print(666);
+	}
+}

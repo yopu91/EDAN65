@@ -10,7 +10,7 @@ int gcd1(int a, int b){
   return a;
 }
 int gcd2(int a, int b){
-  if (b == 0){
+  if (b == ){
     return a;
   }
   return gcd2(b, a % b);
@@ -24,6 +24,6 @@ int main(){
   print(gcd2(a, b));
   int diff = gcd1(a, b) - gcd2(a, b);
   print(diff);
-  return 0;
+  return ;
 }
 

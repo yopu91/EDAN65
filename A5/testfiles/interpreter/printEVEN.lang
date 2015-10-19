@@ -1,0 +1,19 @@
+int printMod(int left, int right){
+
+	int stop = 10;
+	int start = 0;
+
+	while(start < stop){
+		if (left % right != 0){
+			print(1);
+		}else{
+			print(0);
+		}
+		start = start + 5;
+	}
+}
+
+int main(){
+	int left = 101;
+	printMod(left, 10);
+}

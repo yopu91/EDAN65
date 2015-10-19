@@ -21,4 +21,4 @@ Program
                   IdUse
                   IdUse
         ReturnStmt
-          Numeral
+          IntLiteral

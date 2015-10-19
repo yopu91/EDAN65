@@ -11,7 +11,7 @@
 
 %terminals ID, NUMERAL, ASSIGN, IF,ELSE, WHILE, INT, RETURN, COMMA, TRUE, FALSE;
 //Structure terminals
-%terminals LPAR, RPAR, LBRACKET, RBRACKET, SEMI;
+%terminals LPAR, RPAR, LBRACKET, RBRACKET;
 
 //Arith terminals
 %terminals ADD, SUB, MUL, DIV, MOD;
@@ -32,7 +32,6 @@
 %typeof assign = "Assignment";
 %typeof declare = "Declare";
 %typeof expr ="Expr";
-%typeof numeral = "Numeral";
 %typeof idUse = "IdUse";
 %typeof param = "Param";
 %typeof param_list = "List";
@@ -147,14 +146,14 @@ factor = literal
 
 
 
-numeral = NUMERAL.num {:return new Numeral(num);:};
+//numeral = NUMERAL.num {:return new Numeral(num);:};
 
 idUse = ID.id {:return new IdUse(id);:};
 
 iddecl = ID.id {:return new IdDecl(id);:}; 
 
 
-literal = INT.i     {: return new IntLiteral(i); :}
+literal = NUMERAL.i     {: return new IntLiteral(i); :}
         | TRUE.i    {: return new BoolLiteral(i); :}
         | FALSE.i   {: return new BoolLiteral(i); :}
         ;

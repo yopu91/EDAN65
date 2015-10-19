@@ -1,0 +1,16 @@
+int shouldPrintThreeOnes() {
+	int a = 3;
+    if (a == 4) {
+        print(3333);
+    }
+    if (a > 10) {
+	return 999999;
+    }
+    else {
+        print(111);
+    }
+}
+
+int main(){
+	shouldPrintThreeOnes();
+}

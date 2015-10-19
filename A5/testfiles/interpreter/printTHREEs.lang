@@ -1,0 +1,17 @@
+int shouldPrintThreeThrees() {
+	int a = 333;
+    if (a == 4) {
+        print(303);
+    }
+    if (a > 10) {
+	print(a);
+	return 999999;
+    }
+    else {
+        print(111);
+    }
+}
+
+int main(){
+	shouldPrintThreeThrees();
+}

@@ -24,10 +24,10 @@ movq $1, %rdx
 cmpq %rbx, %rcx
 cmovne %rdx, %rax
 compq $0, %rax
-je else2
-if2:
+je else1
+if1:
 movq $0, %rax
-endif2:
+endif1:
 movq %rbp, %rsp
 popq %rbp
 ret

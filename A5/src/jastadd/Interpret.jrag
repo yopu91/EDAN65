@@ -26,24 +26,31 @@ aspect Interpret
 
         public void set(String name, int val) {
             if (!contains(name)) {
-                if (parent != null)
-                    parent.set(name, val);
-                else
-                    throw new RuntimeException("Undefined variable '" + name + "'");
+                if (parent != null){
+                    	parent.set(name, val);
+//			System.out.println("Just set parent with args: ( "+name+", "+val+")");
+		}
+                else{
+                	throw new RuntimeException("Parent == null when doing set --> Undefined variable '" + name + "' with value:"+val);
+		}
             }
             vars.put(name, val);
         }
 
         public int get(String name) {
             if (!contains(name)) {
-                if (parent != null)
-                    return parent.get(name);
-                throw new RuntimeException("Variable '" + name + "' not set");
+                if (parent != null){
+                    	return parent.get(name);
+		}
+                throw new RuntimeException("Parent == null when doing get --> Variable '" + name + "' uninitialized");
             }
-		System.out.println("Returning vars.get("+name+")");
             return vars.get(name);
         }
     }
+
+/*******************************************************************************************/
+/*		1.8 Return Statements							   */
+/*******************************************************************************************/
 
     public class ReturnException extends RuntimeException {
         protected int v;
@@ -75,10 +82,19 @@ aspect Interpret
         if (main == null)
             throw new RuntimeException("Main is undefined");
         
+	/*TODOThis code makes sure to initialize the values of the main-arguments to zero*/
+	
         main.eval(new ActivationRecord());
     }
 
     public int ParamFunc.eval(ActivationRecord rec) {
+	if(getName().getID().equals("main")){
+		for(int i = 0; i<getNumParams(); i++){
+			String id = getParams(i).getIdDecl().getID();
+			rec.decl(id,0); //initialize main args to 0
+		}
+	}
+
         try {
 	     for(Stmt st : getStmtsList())
             	st.eval(rec);
@@ -101,7 +117,6 @@ aspect Interpret
     public void Declare.eval(ActivationRecord rec) {
         if (hasExpr()) {
             int v = getExpr().eval(rec);
-		System.out.println("In Declare.eval, expression evaluated to: "+v);
             rec.decl(getIdDecl().getID(), v);
         }
     }
@@ -165,44 +180,36 @@ aspect Interpret
 		}
 	}
 
-/*
-    @Override
-    public void Block.eval(ActivationRecord rec) {
-        for(Statement stmt : getStatements())
-            stmt.eval(rec);
-    }
-*/
-
     /** expressions **/
 
     public int Expr.eval(ActivationRecord rec) {
         return 0;
     }
-/*
+
     	@Override
 	    public int IdUse.eval(ActivationRecord rec) { return rec.get(getID()); }
-*/
 
-/*
+
+
     @Override
     public int IntLiteral.eval(ActivationRecord rec) { return Integer.parseInt(getINT()); }
 
     @Override
     public int BoolLiteral.eval(ActivationRecord rec) { return Boolean.parseBoolean(getBOOL()) ? 1 : 0; }
-*/
+
 
 
 /* 1.7 */
 
     @Override
     public int FuncCall.eval(ActivationRecord rec) {
-        ParamFunc pf = getName().function();
-        ActivationRecord call = rec.scope();
-        for(int i = 0; i < getNumE(); i++) {
-            call.decl(pf.getParams(i).getIdDecl().getID(), getE(i).eval(rec));
-        }
-        return pf.eval(call);
-    }
+        	ParamFunc pf = getName().function();
+        	ActivationRecord call = rec.scope();
+        	for(int i = 0; i < getNumE(); i++) {
+            		call.decl(pf.getParams(i).getIdDecl().getID(), getE(i).eval(rec));
+        	}
+        	return pf.eval(call);
+    	}
 
     /** arithmetic **/
 
@@ -214,39 +221,28 @@ aspect Interpret
     	public int Mul.eval(ActivationRecord rec) { return getLeft().eval(rec) * getRight().eval(rec); }
     	@Override
     	public int Div.eval(ActivationRecord rec) { return getLeft().eval(rec) / getRight().eval(rec); }
+
     	@Override
     	public int Mod.eval(ActivationRecord rec) { return getLeft().eval(rec) % getRight().eval(rec); }
 
     /** logic **/
 
-    @Override
-    public int Gthn.eval(ActivationRecord rec) { return getLeft().eval(rec) > getRight().eval(rec) ? 1 : 0; }
-    @Override
-    public int Geq.eval(ActivationRecord rec) { return getLeft().eval(rec) >= getRight().eval(rec) ? 1 : 0; }
-    @Override
-    public int Lthn.eval(ActivationRecord rec) { return getLeft().eval(rec) < getRight().eval(rec) ? 1 : 0; }
-    @Override
-    public int Leq.eval(ActivationRecord rec) { return getLeft().eval(rec) <= getRight().eval(rec) ? 1 : 0; }
-    @Override
-    public int Eq.eval(ActivationRecord rec) { return getLeft().eval(rec) == getRight().eval(rec) ? 1 : 0; }
-    @Override
-    public int Neq.eval(ActivationRecord rec) { return getLeft().eval(rec) != getRight().eval(rec) ? 1 : 0; }
+    	@Override
+    	public int Gthn.eval(ActivationRecord rec) { return getLeft().eval(rec) > getRight().eval(rec) ? 1 : 0; }
 
-/*
-    @Override
-    public int AndExpr.eval(ActivationRecord rec) { 
-        boolean left  = getLeft().eval(rec) == 1 ? true : false;
-        boolean right = getRight().eval(rec) == 1 ? true : false;
-        return left && right ? 1 : 0;
-    }
+    	@Override
+    	public int Geq.eval(ActivationRecord rec) { return getLeft().eval(rec) >= getRight().eval(rec) ? 1 : 0; }
 
-    @Override
-    public int OrExpr.eval(ActivationRecord rec) { 
-        boolean left  = getLeft().eval(rec) == 1 ? true : false;
-        boolean right = getRight().eval(rec) == 1 ? true : false;
-        return left || right ? 1 : 0;
-    }
-    @Override
-    public int NotExpr.eval(ActivationRecord rec) { return getExpr().eval(rec) == 1 ? 0 : 1; } 
-*/
+    	@Override
+    	public int Lthn.eval(ActivationRecord rec) { return getLeft().eval(rec) < getRight().eval(rec) ? 1 : 0; }
+
+    	@Override
+    	public int Leq.eval(ActivationRecord rec) { return getLeft().eval(rec) <= getRight().eval(rec) ? 1 : 0; }
+
+    	@Override
+    	public int Eq.eval(ActivationRecord rec) { return getLeft().eval(rec) == getRight().eval(rec) ? 1 : 0; }
+
+    	@Override
+    	public int Neq.eval(ActivationRecord rec) { return getLeft().eval(rec) != getRight().eval(rec) ? 1 : 0; }
+
 }

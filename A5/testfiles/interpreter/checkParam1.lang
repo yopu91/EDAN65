@@ -1,0 +1,10 @@
+int testPrintParam(int toprint_a, int toprint_b){
+	int this_func_should_print_0222_since_maina_is_by_default_0 = 0;
+	print(toprint_a);
+	print(toprint_b);
+	return toprint_a+toprint_b;
+}
+
+int main(int main_a){
+	testPrintParam(main_a, 222);
+}

@@ -84,15 +84,15 @@ aspect CodeGen {
 	}	
 	public void WhileStmt.genCode(PrintStream out){
 		String label = "while"+ Program.nextCounter();
-		out.println(label+ ":");
+		out.println(label+":");
 		getCond().genCode(out);
 		out.println(		"cmpq $0, %rax");
 		out.println(		"je end" + label);
 		for(Stmt s: getStmtList()){
 			s.genCode(out);
 		}
-		out.println(		"jmp"+label);
-		out.println(		"end" + label+":");
+		out.println(		"jmp "+label);
+		out.println(		"end"+label+":");
 		
 	}	
 	public void ReturnStmt.genCode(PrintStream out){
@@ -204,19 +204,22 @@ aspect CodeGen {
 		out.println(		"movq $" + getNUMERAL() + ", %rax");
 	}
 
-	public void IdUse.genEval(PrintStream out) {
+	public void IdUse.genCode(PrintStream out) {
 		out.println("        movq " + getID() + ", %rax");
 	}
 
-	public void IdDecl.genEval(PrintStream out) {
-		out.println("        movq " + getID() + ", %rax");
+	public void IdDecl.genCode(PrintStream out) {
+		out.println("        movq " + address() + ", %rax");
 	}
 	
 	//Check for local variable
 	inh boolean IdDecl.isLocalVariable();
-	eq Declare.getType().isLocalVariable() = true;
+	eq Declare.getIdDecl().isLocalVariable() = true;
 	eq Param.getIdDecl().isLocalVariable() = false; 
-//	eq ParamFunc.getType().isLocalVariable() = false; 
+	eq ParamFunc.getType().isLocalVariable() = false; 
+	eq ParamFunc.getName().isLocalVariable()= false;
+	eq ParamFunc.getParams().isLocalVariable() = false;
+	//eq Program.getName().getType().isLocalVariable() = false();
 	/**
  	 * Address of local variable variable in the current stack frame.
  	 */

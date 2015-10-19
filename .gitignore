@@ -42,3 +42,5 @@ local.properties
 .jar
 ant-bin/
 /src/gen/
+*.s
+*.elf

@@ -90,17 +90,46 @@ aspect Interpret
         
 	/*TODO This code makes sure to initialize the values of the main-arguments to zero*/
 	
-        main.eval(new ActivationRecord());
+	ActivationRecord mainAR = new ActivationRecord();
+	
+	for (ParamFunc pf : PredefinedFunctions()){
+/*		mainAR.decl(pf.getParams(0).getIdDecl().uniqueName(),0);
+		pf.eval(new ActivationRecord(mainAR));
+*/
+		if(pf.getName().getID().equals("print")){
+			mainAR.decl(pf.getParams(0).getIdDecl().uniqueName(), 0);
+		}
+		//pf.eval(new ActivationRecord());
+	}
+
+        main.eval(mainAR);
+
+
     }
+
 
     public int ParamFunc.eval(ActivationRecord rec) {
 //	if(getName().getID().equals("main")){
-	if(getName().uniqueName().equals("main")){
+	String n = getName().uniqueName();
+	if(n.equals("main")){
 		for(int i = 0; i<getNumParams(); i++){
 			String id = getParams(i).getIdDecl().uniqueName();
 			rec.decl(id,0); //initialize main args to 0
 		}
 	}
+
+/*	if(n.equals("print")){
+		String id = getParams(0).getIdDecl().getID();
+		if(!rec.contains("print")){
+	                rec.decl(id,0);
+		}
+                	return rec.get(id);
+		
+	}
+*/
+
+
+
 
         try {
 	     for(Stmt st : getStmtsList())
@@ -271,16 +300,21 @@ aspect UniqueName {
 
 	
 	inh String IdDecl.appendIndex();
-//	syn String IdDecl.uniqueName() = appendIndex() + getID();
-	syn String IdDecl.uniqueName() = getID();
-	
+	syn String IdDecl.uniqueName() = appendIndex() + getID();
+
+	inh String Stmt.uniqueId();
+
+//	syn String IdDecl.uniqueName() = getID();	
 	eq Program.getChild().appendIndex() ="";
+
+
 	eq ParamFunc.getParams(int index).appendIndex() = "param" + index + "_";
   	eq ParamFunc.getName().appendIndex() =  "";
+  	eq ParamFunc.getStmts(int index).uniqueId() = appendIndex() + Integer.toString(index) + "_";
+
   	eq Declare.getIdDecl().appendIndex() = uniqueId();
   
-	inh String Stmt.uniqueId();
-  	eq ParamFunc.getStmts(int index).uniqueId() = appendIndex() + Integer.toString(index) + "_";
+
   	eq WhileStmt.getStmt(int index).uniqueId() = appendIndex() + Integer.toString(index) + "_";
   	eq IfStmt.getThen(int index).uniqueId() = appendIndex() + Integer.toString(index) + "_";
   	eq ElseStmt.getStmt(int index).uniqueId() = appendIndex() + Integer.toString(index) + "_";

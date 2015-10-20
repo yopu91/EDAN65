@@ -211,7 +211,7 @@ aspect NameAnalysis {
 
 
 	syn boolean IdDecl.isMultiplyDeclared() {
-		IdDecl decl = lookup(getID());
+		IdDecl decl = lookup(uniqueName());
 		if(decl.isUnknown()){
 			return false;
 		}
@@ -239,50 +239,3 @@ aspect CircularDefinitions {
 		return inExprOf(decl);		
 	}
 }
-
-
-
-
-/**************************************************************************************
-
-Program ::= ParamFunc*;
-ParamFunc               ::= Name:IdDecl Params:Param* Stmts:Stmt*;
-Param                   ::= IdDecl;
-
-abstract Stmt;
-
-WhileStmt:Stmt          ::= Cond:Expr Stmt*;
-IfStmt:Stmt             ::= Cond:Expr Then:Stmt* [ElseStmt];
-ElseStmt:Stmt           ::= Stmt*;
-ReturnStmt:Stmt         ::= Expr;
-FuncCall:Expr           ::= Name:IdUse E:Expr*;
-
-FuncStmt:Stmt           ::= FuncCall;
-
-
-Assignment:Stmt         ::= Identifier:IdUse Expression:Expr;
-Declare:Stmt            ::= Identifier:IdDecl [Expr];
-
-abstract Expr;
-Numeral:Expr            ::= <NUMERAL>;
-IdUse:Expr              ::= <ID>; 
-IdDecl                  ::= <ID>; 
-
-UnknownDecl : IdDecl;
-
-BinaryExpr:Expr         ::= Left:Expr Right:Expr;
-Add:BinaryExpr;
-Sub:BinaryExpr;
-Div:BinaryExpr;
-Mul:BinaryExpr;
-Mod:BinaryExpr;
-
-Neq:BinaryExpr;
-Eq:BinaryExpr;
-Leq:BinaryExpr;
-Lthn:BinaryExpr;
-Geq:BinaryExpr;
-Gthn:BinaryExpr;
-
-*******************************************************/
-

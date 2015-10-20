@@ -1,17 +1,48 @@
 aspect PredefinedFunctions {
 
 	class Printer extends ParamFunc {
+/*		Declare printArgDecl;
+		
+		public IdDecl getArg(){
+			printArgDecl = new Declare(
+                                                        new IntType(),
+                                                        new IdDecl("value"),
+                                                        new Opt<Expr>()
+                                                );
+			
+			printArgDecl.setExpr( new IntLiteral("0") );
+			return printArgDecl.getIdDecl();
+		}
         	public Printer() {
-            		super(new IntType(), new IdDecl("print"), 
-				new List<Param>( new Param( new IntType(), new IdDecl("value")) ), new List<Stmt>() );
+            		super(
+				new IntType(), 
+				new IdDecl("print"), 
+				new List<Param>( 
+					new Param( 
+						new IntType(), 
+						new IdDecl("value")
+						)), 
+				new List<Stmt>() 	
+			     );
+			getParam(0).
         	}
+
+*/  
+		public Printer() {
+                        super(new IntType(), new IdDecl("print"),
+                                new List<Param>( new Param( new IntType(), new IdDecl("value")) ), new List<Stmt>() );
+
+                }
+
+		boolean first = true;
 
 	        @Override
 	        public int eval(ActivationRecord rec) {
-			/*Should print out the final value*/
-        	    	System.out.println(rec.get("value"));
-	            	return 0;
+	           	System.out.println(rec.get("param0_value"));
+		       	return 0;
+			
         	}
+
     	}
 
     	class Reader extends ParamFunc {
@@ -23,29 +54,16 @@ aspect PredefinedFunctions {
        	 	public int eval(ActivationRecord rec) {
             		return 0;
         	}
-    	}
+		
+  
+  	}
 
 
-	syn nta List<ParamFunc> Program.PredefinedFunctions() {
-	
+	syn nta List<ParamFunc> Program.PredefinedFunctions() {	
 		List<ParamFunc> funcList = new List<ParamFunc>();
 		funcList.add(new Printer());
 		funcList.add(new Reader());
 		return funcList;
-	/*
-
-		ParamFunc read = new ParamFunc();
-		read.setName(new IdDecl("read"));
-		func.add(read);
-
-	
-		ParamFunc print = new ParamFunc();
-		print.setName(new IdDecl("print"));
-		Param param = new Param(new IntType(), new IdDecl("param1"));
-		print.setParams(param,0);
-		func.add(print);
-		return func;
-*/
 	}
 
 	inh List<ParamFunc> ASTNode.PredefinedFunctions();

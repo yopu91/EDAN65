@@ -28,7 +28,6 @@ aspect Interpret
             if (!contains(name)) {
                 if (parent != null){
                     	parent.set(name, val);
-//			System.out.println("Just set parent with args: ( "+name+", "+val+")");
 		}
                 else{
                 	throw new RuntimeException("Parent == null when doing set --> Undefined variable '" + name + "' with value:"+val);
@@ -72,8 +71,12 @@ aspect Interpret
         public ContinueException() { }
     }
 
+/*******************************************************************************************/
+/*              Main and predefined functions                                              */
+/*******************************************************************************************/
+
+
     public void Program.eval() {
-        // find main
         ParamFunc main = null;
         for(int i = 0; i < getNumParamFunc(); i++) {
             ParamFunc pf = getParamFunc(i);
@@ -93,13 +96,9 @@ aspect Interpret
 	ActivationRecord mainAR = new ActivationRecord();
 	
 	for (ParamFunc pf : PredefinedFunctions()){
-/*		mainAR.decl(pf.getParams(0).getIdDecl().uniqueName(),0);
-		pf.eval(new ActivationRecord(mainAR));
-*/
-		if(pf.getName().getID().equals("print")){
+		if(pf.getName().getID().equals("print")){ //We don't care about 'read'
 			mainAR.decl(pf.getParams(0).getIdDecl().uniqueName(), 0);
 		}
-		//pf.eval(new ActivationRecord());
 	}
 
         main.eval(mainAR);
@@ -109,7 +108,6 @@ aspect Interpret
 
 
     public int ParamFunc.eval(ActivationRecord rec) {
-//	if(getName().getID().equals("main")){
 	String n = getName().uniqueName();
 	if(n.equals("main")){
 		for(int i = 0; i<getNumParams(); i++){
@@ -118,15 +116,6 @@ aspect Interpret
 		}
 	}
 
-/*	if(n.equals("print")){
-		String id = getParams(0).getIdDecl().getID();
-		if(!rec.contains("print")){
-	                rec.decl(id,0);
-		}
-                	return rec.get(id);
-		
-	}
-*/
 
 
 
@@ -139,14 +128,15 @@ aspect Interpret
         return 0; 
     }
 
-    /** statements **/
+/*******************************************************************************************/
+/*              Evaluation of statements                                                   */
+/*******************************************************************************************/
 
     public void Stmt.eval(ActivationRecord rec) { }
 
     @Override
     public void Assignment.eval(ActivationRecord rec) {
         int v = getExpression().eval(rec);
-//        rec.set(getIdentifier().getID(), v);
         	rec.set(getIdentifier().decl().uniqueName(), v);
     }
 
@@ -154,7 +144,6 @@ aspect Interpret
     public void Declare.eval(ActivationRecord rec) {
         if (hasExpr()) {
             int v = getExpr().eval(rec);
-//            rec.decl(getIdDecl().getID(), v);
 	          rec.decl(getIdDecl().uniqueName(), v);
 
         }
@@ -185,6 +174,11 @@ aspect Interpret
                 catch(BreakException brk) { return; }
             }
     }
+
+
+/*******************************************************************************************/
+/*              1.6			                                                   */
+/*******************************************************************************************/
 
 	 @Override
    	 public void IfStmt.eval(ActivationRecord rec) {
@@ -221,6 +215,11 @@ aspect Interpret
 		return rec.get(id); 
 	}
 
+
+
+/*******************************************************************************************/
+/*              1.2 Literals and arithmetic expressions                                    */
+/*******************************************************************************************/
 
 
     @Override
@@ -285,18 +284,6 @@ aspect Interpret
 
 
 aspect UniqueName {
-/*
-	inh String ParamFunc.uniqueName(String name);
-	inh String IdDecl.uniqueName(String name);
-
-
-	eq ParamFunc.getChild().uniqueName(String name) = name;
-	eq ParamFunc.getParams(int index).uniqueName(String name) = name;
-	
-	eq ParamFunc.getStmts(int index).uniqueName(String name) = uniqueName(index + "_" + name);
-
-	syn String IdDecl.uniqueName() = uniqueName(getID());
-*/
 
 	
 	inh String IdDecl.appendIndex();
@@ -304,7 +291,6 @@ aspect UniqueName {
 
 	inh String Stmt.uniqueId();
 
-//	syn String IdDecl.uniqueName() = getID();	
 	eq Program.getChild().appendIndex() ="";
 
 
